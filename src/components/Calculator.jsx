@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 import ParameterInput from "./ParameterInput.jsx";
 import ResultCard from "./ResultCard.jsx";
@@ -186,13 +186,19 @@ function Calculator() {
 
 
 
-    const yearlyFactor =
-        annualFactor(growthFactor);
+    // const yearlyFactor =
+    //     annualFactor(growthFactor);
+    const yearlyFactor = useMemo(
+    () => annualFactor(growthFactor),
+    [growthFactor]
+);
 
-
-    const yearlyRate =
-        annualGrowthRate(growthFactor);
-
+    // const yearlyRate =
+    //     annualGrowthRate(growthFactor);
+    const yearlyRate = useMemo(
+    () => annualGrowthRate(growthFactor),
+    [growthFactor]
+);
 
 
 
