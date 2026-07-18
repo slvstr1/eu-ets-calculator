@@ -77,12 +77,22 @@ function Calculator() {
             const referencePeriod = Number(values["Reference Period (months)"]);
             const comparisonPeriod = Number(values["Recent Comparison Period (months)"]);
 
-            if (activeField === "Multiplier (m)") {
+            // Safeguard to prevent division-by-zero or mathematically invalid periods in the solver
+            if (referencePeriod <= 0 || comparisonPeriod <= 0) {
+                return;
+            }
+
+            // If the user modifies the Multiplier or either of the periods,
+            // we hold the Multiplier constant and solve for the growth factor.
+            if (
+                activeField === "Multiplier (m)" ||
+                activeField === "Reference Period (months)" ||
+                activeField === "Recent Comparison Period (months)"
+            ) {
                 const result = solveForGrowthFactor(multiplier, referencePeriod, comparisonPeriod);
                 const nextGrowth = result.toFixed(4);
                 const nextAnnual = annualFactor(result).toFixed(2);
 
-                // Check if values actually changed before triggering state update
                 if (
                     values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
                     values["Annual price factor"] !== nextAnnual
@@ -99,7 +109,6 @@ function Calculator() {
                 const nextMultiplier = result.toFixed(2);
                 const nextAnnual = annualFactor(growth).toFixed(2);
 
-                // Check if values actually changed before triggering state update
                 if (
                     values["Multiplier (m)"] !== nextMultiplier ||
                     values["Annual price factor"] !== nextAnnual
@@ -116,7 +125,6 @@ function Calculator() {
                 const nextGrowth = monthly.toFixed(4);
                 const nextMultiplier = result.toFixed(2);
 
-                // Check if values actually changed before triggering state update
                 if (
                     values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
                     values["Multiplier (m)"] !== nextMultiplier
@@ -222,7 +230,6 @@ function Calculator() {
                 decimals={2}
                 step="0.0001"
                 readOnly={true}
-                highlight={highlightFields.includes("Annual price factor")}
             />
         </div>
     );
