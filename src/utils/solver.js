@@ -229,13 +229,13 @@ export function annualGrowthRate(
     Example:     2.16 gives 1.0665
 */
 
-// export function monthlyFactorFromAnnualFactor(
-//     annualFactor
-// ) {
-//
-//     return Math.pow(
-//         annualFactor,
-//         1 / 12
-//     );
-//
-// }
+export function monthlyFactorFromAnnualFactor(
+    annualFactor
+) {
+
+    return Math.pow(
+        annualFactor,
+        1 / 12
+    );
+
+}

@@ -4,44 +4,21 @@ import ParameterInput from "./ParameterInput.jsx";
 // import ResultCard from "./ResultCard.jsx";
 
 import {
-    solveForGrowthFactor,
-    solveForMultiplier,
-    annualFactor,
-    annualGrowthRate,
-    monthlyFactorFromAnnualFactor
+    solveForGrowthFactor, solveForMultiplier, annualFactor, annualGrowthRate, monthlyFactorFromAnnualFactor
 } from "../utils/solver.js";
 
 const TIMEOUTCALC = 750
 const presets = {
     custom: {
-        name: "Custom",
-        multiplier: 2.4,
-        referencePeriod: 24,
-        comparisonPeriod: 6
-    },
-    ets1: {
-        name: "ETS1 Article 29a",
-        multiplier: 2.4,
-        referencePeriod: 24,
-        comparisonPeriod: 6
-    },
-    ets2early: {
-        name: "ETS2 2027–2028",
-        multiplier: 1.5,
-        referencePeriod: 6,
-        comparisonPeriod: 3
-    },
-    ets2small: {
-        name: "ETS2 2029+ (50 million permits)",
-        multiplier: 2,
-        referencePeriod: 6,
-        comparisonPeriod: 3
-    },
-    ets2large: {
-        name: "ETS2 2029+ (150 million permits)",
-        multiplier: 3,
-        referencePeriod: 6,
-        comparisonPeriod: 3
+        name: "Custom", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6
+    }, ets1: {
+        name: "ETS1 Article 29a", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6
+    }, ets2early: {
+        name: "ETS2 2027–2028", multiplier: 1.5, referencePeriod: 6, comparisonPeriod: 3
+    }, ets2small: {
+        name: "ETS2 2029+ (50 million permits)", multiplier: 2, referencePeriod: 6, comparisonPeriod: 3
+    }, ets2large: {
+        name: "ETS2 2029+ (150 million permits)", multiplier: 3, referencePeriod: 6, comparisonPeriod: 3
     }
 };
 
@@ -80,78 +57,39 @@ function Calculator() {
         }
 
         const timer = setTimeout(() => {
-            if (
-                values["Multiplier (m)"] === "" ||
-                values["Maximum monthly constant growth factor (r)"] === "" ||
-                values["Reference Period (months)"] === "" ||
-                values["Recent Comparison Period (months)"] === ""
-            ) {
+            if (values["Multiplier (m)"] === "" || values["Maximum monthly constant growth factor (r)"] === "" || values["Reference Period (months)"] === "" || values["Recent Comparison Period (months)"] === "") {
                 return;
             }
 
-            const multiplier =
-                Number(values["Multiplier (m)"]);
-            const referencePeriod =
-                Number(values["Reference Period (months)"]);
-            const comparisonPeriod =
-                Number(values["Recent Comparison Period (months)"]);
+            const multiplier = Number(values["Multiplier (m)"]);
+            const referencePeriod = Number(values["Reference Period (months)"]);
+            const comparisonPeriod = Number(values["Recent Comparison Period (months)"]);
 
             if (activeField === "Multiplier (m)") {
-                const result =
-                    solveForGrowthFactor(
-                        multiplier,
-                        referencePeriod,
-                        comparisonPeriod
-                    );
+                const result = solveForGrowthFactor(multiplier, referencePeriod, comparisonPeriod);
                 setValues(prev => ({
-                    ...prev,
-                    "Maximum monthly constant growth factor (r)":
-                        result.toFixed(4)
+                    ...prev, "Maximum monthly constant growth factor (r)": result.toFixed(4)
                 }));
 
             }
-            if (
-                activeField ===
-                "Maximum monthly constant growth factor (r)"
-            ) {
+            if (activeField === "Maximum monthly constant growth factor (r)") {
 
-                const result =
-                    solveForMultiplier(
-                        Number(
-                            values[
-                                "Maximum monthly constant growth factor (r)"
-                                ]
-                        ),
-                        referencePeriod,
-                        comparisonPeriod
-                    );
+                const result = solveForMultiplier(Number(values["Maximum monthly constant growth factor (r)"]), referencePeriod, comparisonPeriod);
 
                 setValues(prev => ({
-                    ...prev,
-                    "Multiplier (m)":
-                        result.toFixed(2)
+                    ...prev, "Multiplier (m)": result.toFixed(2)
                 }));
             }
             if (activeField === "Annual price factor") {
 
-                const monthly =
-                    monthlyFactorFromAnnualFactor(
-                        Number(values["Annual price factor"])
-                    );
+                const monthly = monthlyFactorFromAnnualFactor(Number(values["Annual price factor"]));
 
-                const result =
-                    solveForMultiplier(
-                        monthly,
-                        referencePeriod,
-                        comparisonPeriod
-                    );
+                const result = solveForMultiplier(monthly, referencePeriod, comparisonPeriod);
 
                 setValues(prev => ({
                     ...prev,
-                    "Maximum monthly constant growth factor (r)":
-                        monthly.toFixed(4),
-                    "Multiplier (m)":
-                        result.toFixed(2)
+                    "Maximum monthly constant growth factor (r)": monthly.toFixed(4),
+                    "Multiplier (m)": result.toFixed(2)
                 }));
             }
         }, TIMEOUTCALC);
@@ -164,25 +102,14 @@ function Calculator() {
 
     function handleChange(title, value) {
         setValues(prev => ({
-            ...prev,
-            [title]: value
+            ...prev, [title]: value
         }));
     }
 
 
-    const yearlyFactor = useMemo(
-        () => annualFactor(
-            Number(values["Maximum monthly constant growth factor (r)"])
-        ),
-        [values]
-    );
+    const yearlyFactor = useMemo(() => annualFactor(Number(values["Maximum monthly constant growth factor (r)"])), [values]);
 
-    const yearlyRate = useMemo(
-        () => annualGrowthRate(
-            Number(values["Maximum monthly constant growth factor (r)"])
-        ),
-        [values]
-    );
+    const yearlyRate = useMemo(() => annualGrowthRate(Number(values["Maximum monthly constant growth factor (r)"])), [values]);
 
 
     return (
@@ -199,24 +126,20 @@ function Calculator() {
 
                 <select
                     value={preset}
-                    onChange={(e) =>
-                        applyPreset(e.target.value)
-                    }
+                    onChange={(e) => applyPreset(e.target.value)}
                 >
 
-                    {
-                        Object.entries(presets)
-                            .map(([key, value]) => (
+                    {Object.entries(presets)
+                        .map(([key, value]) => (
 
-                                <option
-                                    key={key}
-                                    value={key}
-                                >
-                                    {value.name}
-                                </option>
+                            <option
+                                key={key}
+                                value={key}
+                            >
+                                {value.name}
+                            </option>
 
-                            ))
-                    }
+                        ))}
                 </select>
             </div>
 
@@ -286,9 +209,9 @@ function Calculator() {
                 step="0.0001"
                 readOnly={true}
             />
-        </div>
-    );
+        </div>);
 }
+
 
 
 export default Calculator;
