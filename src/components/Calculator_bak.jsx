@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import ParameterInput_bak2 from "./ParameterInput_bak2.jsx";
+import ParameterInput from "./ParameterInput.jsx";
 import ResultCard from "./ResultCard.jsx";
 
 import {
@@ -16,7 +16,7 @@ function Calculator() {
     const [referencePeriod, setReferencePeriod] = useState(24);
     const [comparisonPeriod, setComparisonPeriod] = useState(6);
 
-    const [multiplier, setMultiplier] = useState(2.4);
+    const [multiplier, setMultiplier] = useState("2.4");
     const [growthFactor, setGrowthFactor] = useState(1.0665);
 
     const [lastEdited, setLastEdited] = useState("multiplier");
@@ -34,7 +34,8 @@ function Calculator() {
             if (lastEdited === "multiplier") {
 
                 const result = solveForGrowthFactor(
-                    multiplier,
+                    // multiplier,
+                      Number(multiplier),
                     referencePeriod,
                     comparisonPeriod
                 );
@@ -47,7 +48,7 @@ function Calculator() {
             if (lastEdited === "growthFactor") {
 
                 const result = solveForMultiplier(
-                    growthFactor,
+                    Number(growthFactor),
                     referencePeriod,
                     comparisonPeriod
                 );
@@ -71,28 +72,46 @@ function Calculator() {
 
 
 
+    // function handleMultiplier(value) {
+    //
+    //     const number = Number(value);
+    //
+    //     if (!isNaN(number)) {
+    //         setMultiplier(number);
+    //         setLastEdited("multiplier");
+    //     }
+    //
+    // }
     function handleMultiplier(value) {
 
-        const number = Number(value);
+    setMultiplier(value);
 
-        if (!isNaN(number)) {
-            setMultiplier(number);
-            setLastEdited("multiplier");
-        }
+    setLastEdited("multiplier");
 
-    }
+    setPreset("custom");
+
+}
 
 
+    // function handleGrowthFactor(value) {
+    //
+    //     const number = Number(value);
+    //
+    //     if (!isNaN(number)) {
+    //         setGrowthFactor(number);
+    //         setLastEdited("growthFactor");
+    //     }
+    //
+    // }
     function handleGrowthFactor(value) {
 
-        const number = Number(value);
+    setGrowthFactor(value);
 
-        if (!isNaN(number)) {
-            setGrowthFactor(number);
-            setLastEdited("growthFactor");
-        }
+    setLastEdited("growthFactor");
 
-    }
+    setPreset("custom");
+
+}
 
 
 
@@ -110,14 +129,14 @@ function Calculator() {
             <div className="parameter-row">
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Multiplier (m)"
                     value={multiplier}
                     onChange={handleMultiplier}
                 />
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Reference Period (months)"
                     value={referencePeriod}
                     onChange={(e) =>
@@ -126,7 +145,7 @@ function Calculator() {
                 />
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Recent Comparison Period (months)"
                     value={comparisonPeriod}
                     onChange={(e) =>
@@ -142,7 +161,7 @@ function Calculator() {
             <div className="growth-box">
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Maximum constant growth factor (r)"
                     value={growthFactor}
                     onChange={handleGrowthFactor}

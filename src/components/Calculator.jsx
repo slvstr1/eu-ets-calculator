@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo} from "react";
 
-import ParameterInput_bak2 from "./ParameterInput_bak2.jsx";
+import ParameterInput from "./ParameterInput.jsx";
 import ResultCard from "./ResultCard.jsx";
 
 import {
@@ -56,18 +56,18 @@ function Calculator() {
 
 
     const [referencePeriod, setReferencePeriod] =
-        useState(24);
+        useState("24");
 
     const [comparisonPeriod, setComparisonPeriod] =
-        useState(6);
+        useState("6");
 
 
     const [multiplier, setMultiplier] =
-        useState(2.4);
+        useState("2.4");
 
 
     const [growthFactor, setGrowthFactor] =
-        useState(1.0665);
+        useState("1.0665");
 
 
     const [lastEdited, setLastEdited] =
@@ -120,8 +120,8 @@ function Calculator() {
                     );
 
 
-                setGrowthFactor(result);
-
+                // setGrowthFactor(result);
+                setGrowthFactor(String(result));
             }
 
 
@@ -136,8 +136,8 @@ function Calculator() {
                     );
 
 
-                setMultiplier(result);
-
+                // setMultiplier(result);
+setMultiplier(String(result));
             }
 
 
@@ -249,14 +249,14 @@ function Calculator() {
             <div className="parameter-row">
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Multiplier (m)"
                     value={multiplier}
                     onChange={handleMultiplier}
                 />
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Reference Period (months)"
                     value={referencePeriod}
                     onChange={(e) =>
@@ -267,7 +267,7 @@ function Calculator() {
                 />
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Recent Comparison Period (months)"
                     value={comparisonPeriod}
                     onChange={(e) =>
@@ -284,11 +284,11 @@ function Calculator() {
             <div className="growth-box">
 
 
-                <ParameterInput_bak2
+                <ParameterInput
                     title="Maximum monthly constant growth factor (r)"
                     value={growthFactor}
                     decimals={4}
-                      step="0.0001"
+                    step="0.0001"
                     onChange={handleGrowthFactor}
                 />
 
@@ -296,23 +296,22 @@ function Calculator() {
             </div>
 
 
-            <ParameterInput_bak2
+            <ParameterInput
                 title="Annual price factor"
                 value={yearlyFactor}
                 decimals={2}
-                  step="0.01"
+                step="0.01"
                 onChange={handleAnnualFactor}
             />
 
-            <ParameterInput_bak2
+            <ParameterInput
                 title="Annual growth rate (%)"
                 value={yearlyRate * 100}
                 decimals={2}
-                  step="0.0001"
+                step="0.0001"
                 onChange={() => {
                 }}
             />
-
 
 
         </div>
