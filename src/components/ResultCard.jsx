@@ -24,7 +24,7 @@ function ResultCard({
                     </span>
 
                     <strong>
-                        {annualFactor.toFixed(2)}
+                        {Number(annualFactor).toFixed(2)}
                     </strong>
 
                 </div>
@@ -37,7 +37,7 @@ function ResultCard({
                     </span>
 
                     <strong>
-                        {(annualRate * 100).toFixed(1)}%
+                        {(Number(annualRate) * 100).toFixed(1)}%
                     </strong>
 
                 </div>

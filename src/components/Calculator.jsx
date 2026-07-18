@@ -8,7 +8,7 @@ import {
     solveForMultiplier,
     annualFactor,
     annualGrowthRate,
-    monthlyFactorFromAnnualFactor
+    // monthlyFactorFromAnnualFactor
 } from "../utils/solver.js";
 
 const TIMEOUTCALC = 750
@@ -48,34 +48,17 @@ const presets = {
         referencePeriod: 6,
         comparisonPeriod: 3
     }
-
 };
 
-
 function Calculator() {
-
-
-    const [referencePeriod, setReferencePeriod] =
-        useState("24");
-
-    const [comparisonPeriod, setComparisonPeriod] =
-        useState("6");
-
-
-    const [multiplier, setMultiplier] =
-        useState("2.4");
-
-
-    const [growthFactor, setGrowthFactor] =
-        useState("1.0665");
-
-
-    const [lastEdited, setLastEdited] =
-        useState("multiplier");
-
-
-    const [preset, setPreset] =
-        useState("ets1");
+    const [activeField, setActiveField] = useState(null);
+    const [preset, setPreset] = useState("ets1");
+    const [values, setValues] = useState({
+        "Multiplier (m)": "2.4",
+        "Reference Period (months)": "24",
+        "Recent Comparison Period (months)": "6",
+        "Maximum monthly constant growth factor (r)": "1.0665"
+    });
 
 
     /*
@@ -83,129 +66,104 @@ function Calculator() {
     */
 
     function applyPreset(key) {
-
         const p = presets[key];
-
         setPreset(key);
+        setValues({
+            "Multiplier (m)": String(p.multiplier),
+            "Reference Period (months)": String(p.referencePeriod),
+            "Recent Comparison Period (months)": String(p.comparisonPeriod),
+            "Maximum monthly constant growth factor (r)": "1.0665"
+        });
 
-        setMultiplier(p.multiplier);
-
-        setReferencePeriod(p.referencePeriod);
-
-        setComparisonPeriod(p.comparisonPeriod);
-
-        setLastEdited("multiplier");
-
+        setActiveField("Multiplier (m)");
     }
 
-
-    /*
-        Recalculate after 500 ms
-    */
-
     useEffect(() => {
+        if (!activeField) {
+            return;
+        }
 
         const timer = setTimeout(() => {
-
-            // Do not calculate while the user is temporarily editing
             if (
-                multiplier === "" ||
-                growthFactor === "" ||
-                referencePeriod === "" ||
-                comparisonPeriod === ""
+                values["Multiplier (m)"] === "" ||
+                values["Maximum monthly constant growth factor (r)"] === "" ||
+                values["Reference Period (months)"] === "" ||
+                values["Recent Comparison Period (months)"] === ""
             ) {
                 return;
             }
-            if (lastEdited === "multiplier") {
 
+            const multiplier =
+                Number(values["Multiplier (m)"]);
+            const referencePeriod =
+                Number(values["Reference Period (months)"]);
+            const comparisonPeriod =
+                Number(values["Recent Comparison Period (months)"]);
 
+            if (activeField === "Multiplier (m)") {
                 const result =
                     solveForGrowthFactor(
-                        Number(multiplier),
-                        Number(referencePeriod),
-                        Number(comparisonPeriod)
+                        multiplier,
+                        referencePeriod,
+                        comparisonPeriod
                     );
+                setValues(prev => ({
+                    ...prev,
+                    "Maximum monthly constant growth factor (r)":
+                        result.toFixed(4)
+                }));
 
-
-                // setGrowthFactor(result);
-                setGrowthFactor(String(result));
             }
-
-            if (lastEdited === "growthFactor") {
-
+            if (
+                activeField ===
+                "Maximum monthly constant growth factor (r)"
+            ) {
 
                 const result =
                     solveForMultiplier(
-                        Number(growthFactor),
-                        Number(referencePeriod),
-                        Number(comparisonPeriod)
+                        Number(
+                            values[
+                                "Maximum monthly constant growth factor (r)"
+                                ]
+                        ),
+                        referencePeriod,
+                        comparisonPeriod
                     );
 
-
-                // setMultiplier(result);
-                setMultiplier(String(result));
+                setValues(prev => ({
+                    ...prev,
+                    "Multiplier (m)":
+                        result.toFixed(2)
+                }));
             }
-
-
         }, TIMEOUTCALC);
-
-
         return () => clearTimeout(timer);
+    }, [values, activeField]);
 
-
-    }, [
-        multiplier,
-        growthFactor,
-        referencePeriod,
-        comparisonPeriod,
-        lastEdited
-    ]);
-
-
-    function handleMultiplier(value) {
-
-        setMultiplier(value);
-
-        setLastEdited("multiplier");
-
-        setPreset("custom");
-
+    function handleFocus(title) {
+        setActiveField(title);
     }
 
-
-    function handleGrowthFactor(value) {
-
-        setGrowthFactor(value);
-
-        setLastEdited("growthFactor");
-
-        setPreset("custom");
-
-    }
-
-    function handleAnnualFactor(value) {
-
-        setGrowthFactor(
-            monthlyFactorFromAnnualFactor(
-                Number(value)
-            )
-        );
-
-        setLastEdited("growthFactor");
-
-        setPreset("custom");
-
+    function handleChange(title, value) {
+        setValues(prev => ({
+            ...prev,
+            [title]: value
+        }));
     }
 
 
     const yearlyFactor = useMemo(
-        () => annualFactor(Number(growthFactor)),
-        [growthFactor]
+        () => annualFactor(
+            Number(values["Maximum monthly constant growth factor (r)"])
+        ),
+        [values]
     );
 
     const yearlyRate = useMemo(
-        () => annualGrowthRate(Number(growthFactor)),
-        [growthFactor]
+        () => annualGrowthRate(
+            Number(values["Maximum monthly constant growth factor (r)"])
+        ),
+        [values]
     );
 
 
@@ -247,27 +205,26 @@ function Calculator() {
             <div className="parameter-row">
                 <ParameterInput
                     title="Multiplier (m)"
-                    value={multiplier}
-                    onChange={handleMultiplier}
+                    value={values["Multiplier (m)"]}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
                     step="0.01"
                 />
 
 
                 <ParameterInput
                     title="Reference Period (months)"
-                    value={referencePeriod}
-                    onChange={(e) =>
-                        setReferencePeriod(e)
-                    }
+                    value={values["Reference Period (months)"]}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
                     step="1"
                 />
 
                 <ParameterInput
                     title="Recent Comparison Period (months)"
-                    value={comparisonPeriod}
-                    onChange={(e) =>
-                        setComparisonPeriod(e)
-                    }
+                    value={values["Recent Comparison Period (months)"]}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
                     step="1"
                 />
 
@@ -278,19 +235,23 @@ function Calculator() {
 
                 <ParameterInput
                     title="Maximum monthly constant growth factor (r)"
-                    value={growthFactor}
-                    decimals={4}
+                    value={values["Maximum monthly constant growth factor (r)"]}
+                    // decimals={4}
                     step="0.0001"
-                    onChange={handleGrowthFactor}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
                 />
             </div>
 
             <ParameterInput
                 title="Annual price factor"
+                // value={values["Annual price factor"]}
                 value={yearlyFactor}
                 decimals={2}
                 step="0.01"
-                onChange={handleAnnualFactor}
+                // onChange={handleChange}
+                // onFocus={handleFocus}
+                readOnly={true}
             />
 
             <ParameterInput
@@ -298,8 +259,7 @@ function Calculator() {
                 value={yearlyRate * 100}
                 decimals={2}
                 step="0.0001"
-                onChange={() => {
-                }}
+                readOnly={true}
             />
         </div>
     );
