@@ -253,15 +253,6 @@ function Calculator() {
                 />
 
 
-                {/*<ParameterInput*/}
-                {/*    title="Reference Period (months)"*/}
-                {/*    value={referencePeriod}*/}
-                {/*    onChange={(e) =>*/}
-                {/*        setReferencePeriod(*/}
-                {/*            Number(e)*/}
-                {/*        )*/}
-                {/*    }*/}
-                {/*/>*/}
                 <ParameterInput
                     title="Reference Period (months)"
                     value={referencePeriod}
@@ -271,16 +262,6 @@ function Calculator() {
                     step="1"
                 />
 
-
-                {/*<ParameterInput*/}
-                {/*    title="Recent Comparison Period (months)"*/}
-                {/*    value={comparisonPeriod}*/}
-                {/*    onChange={(e) =>*/}
-                {/*        setComparisonPeriod(*/}
-                {/*            Number(e)*/}
-                {/*        )*/}
-                {/*    }*/}
-                {/*/>*/}
                 <ParameterInput
                     title="Recent Comparison Period (months)"
                     value={comparisonPeriod}

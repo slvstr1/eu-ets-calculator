@@ -7,10 +7,11 @@ function ParameterInput({
     onChange,
     decimals = null,
     readOnly = false,
-    step = "0.0001"
+    step = "1"
 }) {
 
-    const [inputValue, setInputValue] = useState(value);
+    const [inputValue, setInputValue] = useState(String(value ?? ""));
+    const [highlight, setHighlight] = useState(false);
 
 
     /*
@@ -18,42 +19,51 @@ function ParameterInput({
     */
     useEffect(() => {
 
-        if (document.activeElement?.value !== inputValue) {
+        const newValue =
+            decimals === null
+                ? String(value ?? "")
+                : Number(value).toFixed(decimals);
 
-            setInputValue(
-                decimals === null
-                    ? value
-                    : Number(value).toFixed(decimals)
-            );
 
+        if (newValue !== inputValue) {
+
+            setInputValue(newValue);
+
+            setHighlight(true);
+
+            const timer = setTimeout(() => {
+                setHighlight(false);
+            }, 500);
+
+            return () => clearTimeout(timer);
         }
 
     }, [value]);
 
 
-
     function handleChange(e) {
 
-        setInputValue(e.target.value);
+        const text = e.target.value;
 
-        onChange(e.target.value);
+        setInputValue(text);
+
+        onChange(text);
 
     }
-
 
 
     function handleBlur() {
 
         if (decimals !== null && inputValue !== "") {
 
-            setInputValue(
-                Number(inputValue).toFixed(decimals)
-            );
+            const formatted =
+                Number(inputValue).toFixed(decimals);
 
+            setInputValue(formatted);
+            onChange(formatted);
         }
 
     }
-
 
 
     return (
@@ -66,6 +76,7 @@ function ParameterInput({
 
 
             <input
+                className={highlight ? "updated" : ""}
                 type="number"
                 value={inputValue}
                 readOnly={readOnly}
