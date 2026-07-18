@@ -114,9 +114,12 @@ function Calculator() {
 
                 const result =
                     solveForGrowthFactor(
-                        multiplier,
-                        referencePeriod,
-                        comparisonPeriod
+                        // multiplier,
+                        // referencePeriod,
+                        // comparisonPeriod
+                        Number(multiplier),
+                        Number(referencePeriod),
+                        Number(comparisonPeriod)
                     );
 
 
@@ -130,9 +133,12 @@ function Calculator() {
 
                 const result =
                     solveForMultiplier(
-                        growthFactor,
-                        referencePeriod,
-                        comparisonPeriod
+                        // growthFactor,
+                        // referencePeriod,
+                        // comparisonPeriod
+                        Number(growthFactor),
+                        Number(referencePeriod),
+                        Number(comparisonPeriod)
                     );
 
 
