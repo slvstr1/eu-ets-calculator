@@ -136,7 +136,7 @@ function Calculator() {
 
     const yearlyFactor = useMemo(() => annualFactor(Number(values["Maximum monthly constant growth factor (r)"])), [values]);
 
-    const yearlyRate = useMemo(() => annualGrowthRate(Number(values["Maximum monthly constant growth factor (r)"])), [values]);
+    const yearlyRate = useMemo(() => annualGrowthRate(Number(values["Maximum monthly constant growth factor (r)"])).toFixed(2), [values]);
 
 
     return (
@@ -209,11 +209,6 @@ function Calculator() {
                     step="0.001"
                     onChange={handleChange}
                     onFocus={handleFocus}
-                    // highlight={
-                    //     highlightFields.includes(
-                    //         "Maximum monthly constant growth factor (r)"
-                    //     )
-                    // }
                 />
             </div>
 
