@@ -198,3 +198,14 @@ body {
     transition: background-color 1s ease;
 }
 
+/* Normal state with a smooth transition back */
+.parameter input {
+    background-color: #ffffff; /* Or your current input background */
+    transition: background-color 1s ease;
+}
+
+/* Updated state (applies immediately) */
+.parameter input.updated {
+    background-color: #fff9c4; /* Soft yellow highlight color */
+    transition: none; /* Instant feedback on update */
+}

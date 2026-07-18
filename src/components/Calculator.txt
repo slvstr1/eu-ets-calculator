@@ -11,6 +11,8 @@ const TIMEOUTCALC = 750
 const presets = {
     custom: {
         name: "Custom", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6
+        // }, custom_20: {
+        //     name: "20% annual_ETS2", multiplier: 3, referencePeriod: 6, comparisonPeriod: 3
     }, ets1: {
         name: "ETS1 Article 29a", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6
     }, ets2early: {
@@ -35,6 +37,7 @@ function Calculator() {
     });
 
     function updateCalculatedFields(updates) {
+
         setValues(prev => ({
             ...prev,
             ...updates
@@ -47,9 +50,11 @@ function Calculator() {
         }, 1000);
     }
 
+
     /*
         Apply preset values
     */
+
     function applyPreset(key) {
         const p = presets[key];
         setPreset(key);
@@ -84,21 +89,31 @@ function Calculator() {
                     "Maximum monthly constant growth factor (r)": result.toFixed(4),
                     "Annual price factor": annualFactor(result).toFixed(2)
                 });
+
             }
             if (activeField === "Maximum monthly constant growth factor (r)") {
-                // Fixed: Defined 'growth' variable to resolve the reference error
-                const growth = Number(values["Maximum monthly constant growth factor (r)"]);
-                const result = solveForMultiplier(growth, referencePeriod, comparisonPeriod);
 
+                const result = solveForMultiplier(Number(values["Maximum monthly constant growth factor (r)"]), referencePeriod, comparisonPeriod);
+
+                // setValues(prev => ({
+                //     ...prev, "Multiplier (m)": result.toFixed(2)
+                // }));
                 updateCalculatedFields({
                     "Multiplier (m)": result.toFixed(2),
                     "Annual price factor": annualFactor(growth).toFixed(2)
                 });
             }
             if (activeField === "Annual price factor") {
+
                 const monthly = monthlyFactorFromAnnualFactor(Number(values["Annual price factor"]));
+
                 const result = solveForMultiplier(monthly, referencePeriod, comparisonPeriod);
 
+                // setValues(prev => ({
+                //     ...prev,
+                //     "Maximum monthly constant growth factor (r)": monthly.toFixed(4),
+                //     "Multiplier (m)": result.toFixed(2)
+                // }));
                 updateCalculatedFields({
                     "Maximum monthly constant growth factor (r)": monthly.toFixed(4),
                     "Multiplier (m)": result.toFixed(2)
@@ -118,11 +133,16 @@ function Calculator() {
         }));
     }
 
+
     const yearlyFactor = useMemo(() => annualFactor(Number(values["Maximum monthly constant growth factor (r)"])), [values]);
+
     const yearlyRate = useMemo(() => annualGrowthRate(Number(values["Maximum monthly constant growth factor (r)"])).toFixed(2), [values]);
 
+
     return (
+
         <div className="calculator">
+
             <div className="preset">
                 <label>
                     Select EU ETS mechanism
@@ -132,14 +152,17 @@ function Calculator() {
                     value={preset}
                     onChange={(e) => applyPreset(e.target.value)}
                 >
+
                     {Object.entries(presets)
                         .map(([key, value]) => (
+
                             <option
                                 key={key}
                                 value={key}
                             >
                                 {value.name}
                             </option>
+
                         ))}
                 </select>
             </div>
@@ -151,7 +174,7 @@ function Calculator() {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     step="0.01"
-                    highlight={highlightFields.includes("Multiplier (m)")}
+                    // highlight={highlightFields.includes("Multiplier (m)")}
                 />
 
                 <ParameterInput
@@ -160,7 +183,6 @@ function Calculator() {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     step="1"
-                    highlight={highlightFields.includes("Reference Period (months)")}
                 />
 
                 <ParameterInput
@@ -169,18 +191,20 @@ function Calculator() {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     step="1"
-                    highlight={highlightFields.includes("Recent Comparison Period (months)")}
                 />
+
+
             </div>
 
             <div className="growth-box">
+
                 <ParameterInput
                     title="Maximum monthly constant growth factor (r)"
                     value={values["Maximum monthly constant growth factor (r)"]}
+                    // decimals={4}
                     step="0.001"
                     onChange={handleChange}
                     onFocus={handleFocus}
-                    highlight={highlightFields.includes("Maximum monthly constant growth factor (r)")}
                 />
             </div>
 
@@ -190,7 +214,9 @@ function Calculator() {
                 onChange={handleChange}
                 onFocus={handleFocus}
                 step="0.01"
-                highlight={highlightFields.includes("Annual price factor")}
+                // highlight={
+                //     highlightFields.includes("Annual price factor")
+                // }
             />
 
             <ParameterInput
@@ -200,8 +226,7 @@ function Calculator() {
                 step="0.0001"
                 readOnly={true}
             />
-        </div>
-    );
+        </div>);
 }
 
 export default Calculator;
