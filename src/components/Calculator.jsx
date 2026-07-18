@@ -40,7 +40,15 @@ function Calculator() {
             ...updates
         }));
 
-        setHighlightFields(Object.keys(updates));
+        const keysToHighlight = Object.keys(updates);
+
+        // Since Annual growth rate (%) is calculated, highlight it whenever
+        // the constant growth factor or the annual price factor is updated.
+        if ("Maximum monthly constant growth factor (r)" in updates || "Annual price factor" in updates) {
+            keysToHighlight.push("Annual growth rate (%)");
+        }
+
+        setHighlightFields(keysToHighlight);
 
         setTimeout(() => {
             setHighlightFields([]);
@@ -230,7 +238,7 @@ function Calculator() {
                 decimals={2}
                 step="0.0001"
                 readOnly={true}
-                  highlight={highlightFields.includes("Annual growth rate (%)")}
+                highlight={highlightFields.includes("Annual growth rate (%)")}
             />
         </div>
     );
