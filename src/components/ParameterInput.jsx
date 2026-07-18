@@ -61,7 +61,8 @@ function ParameterInput({
 
 
             <input
-                type="number"
+                // type="number"
+                 type="text"
                 value={displayedValue}
                 readOnly={readOnly}
                 onChange={(e) => onChange(e.target.value)}
