@@ -137,7 +137,7 @@ function Calculator() {
 
 
                 // setMultiplier(result);
-setMultiplier(String(result));
+                setMultiplier(String(result));
             }
 
 
@@ -192,15 +192,11 @@ setMultiplier(String(result));
     }
 
 
-    // const yearlyFactor =
-    //     annualFactor(growthFactor);
     const yearlyFactor = useMemo(
         () => annualFactor(growthFactor),
         [growthFactor]
     );
 
-    // const yearlyRate =
-    //     annualGrowthRate(growthFactor);
     const yearlyRate = useMemo(
         () => annualGrowthRate(growthFactor),
         [growthFactor]
@@ -253,28 +249,45 @@ setMultiplier(String(result));
                     title="Multiplier (m)"
                     value={multiplier}
                     onChange={handleMultiplier}
+                    step="0.01"
                 />
 
 
+                {/*<ParameterInput*/}
+                {/*    title="Reference Period (months)"*/}
+                {/*    value={referencePeriod}*/}
+                {/*    onChange={(e) =>*/}
+                {/*        setReferencePeriod(*/}
+                {/*            Number(e)*/}
+                {/*        )*/}
+                {/*    }*/}
+                {/*/>*/}
                 <ParameterInput
                     title="Reference Period (months)"
                     value={referencePeriod}
                     onChange={(e) =>
-                        setReferencePeriod(
-                            Number(e)
-                        )
+                        setReferencePeriod(Number(e))
                     }
+                    step="1"
                 />
 
 
+                {/*<ParameterInput*/}
+                {/*    title="Recent Comparison Period (months)"*/}
+                {/*    value={comparisonPeriod}*/}
+                {/*    onChange={(e) =>*/}
+                {/*        setComparisonPeriod(*/}
+                {/*            Number(e)*/}
+                {/*        )*/}
+                {/*    }*/}
+                {/*/>*/}
                 <ParameterInput
                     title="Recent Comparison Period (months)"
                     value={comparisonPeriod}
                     onChange={(e) =>
-                        setComparisonPeriod(
-                            Number(e)
-                        )
+                        setComparisonPeriod(Number(e))
                     }
+                    step="1"
                 />
 
 
