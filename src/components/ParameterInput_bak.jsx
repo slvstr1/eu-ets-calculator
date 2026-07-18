@@ -10,7 +10,7 @@ function ParameterInput({
                             decimals = null,
                             // readOnly = false,
                             step = "1",
-                            // highlightChanges = true
+                            highlightChanges = true
                         }) {
 
     const [values, setValues] = useState({

@@ -7,7 +7,7 @@ function ParameterInput({
                             onFocus,
                             readOnly = false,
                             step = "1",
-                            highlight = false,
+                            // highlight = false,
                             decimals = 4
                         }) {
     const [highlight, setHighlight] = useState(false);

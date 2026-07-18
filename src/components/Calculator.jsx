@@ -177,7 +177,7 @@ function Calculator() {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     step="0.01"
-                    highlight={highlightFields.includes("Multiplier (m)")}
+                    // highlight={highlightFields.includes("Multiplier (m)")}
                 />
 
 
@@ -209,11 +209,11 @@ function Calculator() {
                     step="0.001"
                     onChange={handleChange}
                     onFocus={handleFocus}
-                    highlight={
-                        highlightFields.includes(
-                            "Maximum monthly constant growth factor (r)"
-                        )
-                    }
+                    // highlight={
+                    //     highlightFields.includes(
+                    //         "Maximum monthly constant growth factor (r)"
+                    //     )
+                    // }
                 />
             </div>
 
@@ -223,9 +223,9 @@ function Calculator() {
                 onChange={handleChange}
                 onFocus={handleFocus}
                 step="0.01"
-                highlight={
-                    highlightFields.includes("Annual price factor")
-                }
+                // highlight={
+                //     highlightFields.includes("Annual price factor")
+                // }
             />
 
             <ParameterInput
