@@ -230,6 +230,7 @@ function Calculator() {
                 decimals={2}
                 step="0.0001"
                 readOnly={true}
+                  highlight={highlightFields.includes("Annual growth rate (%)")}
             />
         </div>
     );
