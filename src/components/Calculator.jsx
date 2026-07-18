@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useMemo} from "react";
 
-import ParameterInput from "./ParameterInput.jsx";
+import ParameterInput_bak2 from "./ParameterInput_bak2.jsx";
 import ResultCard from "./ResultCard.jsx";
 
 import {
@@ -249,14 +249,14 @@ function Calculator() {
             <div className="parameter-row">
 
 
-                <ParameterInput
+                <ParameterInput_bak2
                     title="Multiplier (m)"
                     value={multiplier}
                     onChange={handleMultiplier}
                 />
 
 
-                <ParameterInput
+                <ParameterInput_bak2
                     title="Reference Period (months)"
                     value={referencePeriod}
                     onChange={(e) =>
@@ -267,7 +267,7 @@ function Calculator() {
                 />
 
 
-                <ParameterInput
+                <ParameterInput_bak2
                     title="Recent Comparison Period (months)"
                     value={comparisonPeriod}
                     onChange={(e) =>
@@ -284,7 +284,7 @@ function Calculator() {
             <div className="growth-box">
 
 
-                <ParameterInput
+                <ParameterInput_bak2
                     title="Maximum monthly constant growth factor (r)"
                     value={growthFactor}
                     decimals={4}
@@ -296,7 +296,7 @@ function Calculator() {
             </div>
 
 
-            <ParameterInput
+            <ParameterInput_bak2
                 title="Annual price factor"
                 value={yearlyFactor}
                 decimals={2}
@@ -304,7 +304,7 @@ function Calculator() {
                 onChange={handleAnnualFactor}
             />
 
-            <ParameterInput
+            <ParameterInput_bak2
                 title="Annual growth rate (%)"
                 value={yearlyRate * 100}
                 decimals={2}
