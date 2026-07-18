@@ -155,6 +155,16 @@ function Calculator() {
         setValues(prev => ({
             ...prev, [title]: value
         }));
+
+        // If the user manually changes the multiplier or either period,
+        // we reset the selected dropdown preset to "custom"
+        if (
+            title === "Multiplier (m)" ||
+            title === "Reference Period (months)" ||
+            title === "Recent Comparison Period (months)"
+        ) {
+            setPreset("custom");
+        }
     }
 
     const yearlyFactor = useMemo(() => annualFactor(Number(values["Maximum monthly constant growth factor (r)"])), [values]);
