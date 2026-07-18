@@ -11,7 +11,7 @@ import {
     monthlyFactorFromAnnualFactor
 } from "../utils/solver.js";
 
-
+const TIMEOUTCALC = 750
 const presets = {
 
     custom: {
@@ -144,7 +144,7 @@ function Calculator() {
             }
 
 
-        }, 500);
+        }, TIMEOUTCALC);
 
 
         return () => clearTimeout(timer);
