@@ -79,30 +79,53 @@ function Calculator() {
 
             if (activeField === "Multiplier (m)") {
                 const result = solveForGrowthFactor(multiplier, referencePeriod, comparisonPeriod);
+                const nextGrowth = result.toFixed(4);
+                const nextAnnual = annualFactor(result).toFixed(2);
 
-                updateCalculatedFields({
-                    "Maximum monthly constant growth factor (r)": result.toFixed(4),
-                    "Annual price factor": annualFactor(result).toFixed(2)
-                });
+                // Check if values actually changed before triggering state update
+                if (
+                    values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
+                    values["Annual price factor"] !== nextAnnual
+                ) {
+                    updateCalculatedFields({
+                        "Maximum monthly constant growth factor (r)": nextGrowth,
+                        "Annual price factor": nextAnnual
+                    });
+                }
             }
             if (activeField === "Maximum monthly constant growth factor (r)") {
-                // Fixed: Defined 'growth' variable to resolve the reference error
                 const growth = Number(values["Maximum monthly constant growth factor (r)"]);
                 const result = solveForMultiplier(growth, referencePeriod, comparisonPeriod);
+                const nextMultiplier = result.toFixed(2);
+                const nextAnnual = annualFactor(growth).toFixed(2);
 
-                updateCalculatedFields({
-                    "Multiplier (m)": result.toFixed(2),
-                    "Annual price factor": annualFactor(growth).toFixed(2)
-                });
+                // Check if values actually changed before triggering state update
+                if (
+                    values["Multiplier (m)"] !== nextMultiplier ||
+                    values["Annual price factor"] !== nextAnnual
+                ) {
+                    updateCalculatedFields({
+                        "Multiplier (m)": nextMultiplier,
+                        "Annual price factor": nextAnnual
+                    });
+                }
             }
             if (activeField === "Annual price factor") {
                 const monthly = monthlyFactorFromAnnualFactor(Number(values["Annual price factor"]));
                 const result = solveForMultiplier(monthly, referencePeriod, comparisonPeriod);
+                const nextGrowth = monthly.toFixed(4);
+                const nextMultiplier = result.toFixed(2);
 
-                updateCalculatedFields({
-                    "Maximum monthly constant growth factor (r)": monthly.toFixed(4),
-                    "Multiplier (m)": result.toFixed(2)
-                });
+                // Check if values actually changed before triggering state update
+                if (
+                    values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
+                    values["Multiplier (m)"] !== nextMultiplier
+                ) {
+                    updateCalculatedFields({
+                        "Maximum monthly constant growth factor (r)": nextGrowth,
+                        "Multiplier (m)": nextMultiplier
+                    });
+                }
             }
         }, TIMEOUTCALC);
         return () => clearTimeout(timer);
@@ -199,6 +222,7 @@ function Calculator() {
                 decimals={2}
                 step="0.0001"
                 readOnly={true}
+                highlight={highlightFields.includes("Annual price factor")}
             />
         </div>
     );
