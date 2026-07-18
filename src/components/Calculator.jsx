@@ -164,7 +164,7 @@ function Calculator() {
 
     function handleMultiplier(value) {
 
-        setMultiplier(Number(value));
+        setMultiplier(value);
 
         setLastEdited("multiplier");
 
@@ -175,7 +175,7 @@ function Calculator() {
 
     function handleGrowthFactor(value) {
 
-        setGrowthFactor(Number(value));
+        setGrowthFactor(value);
 
         setLastEdited("growthFactor");
 

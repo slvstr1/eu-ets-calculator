@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+const HIGHLIGHTTIME = 1000;
 
 function ParameterInput({
     title,
@@ -33,7 +33,7 @@ function ParameterInput({
 
             const timer = setTimeout(() => {
                 setHighlight(false);
-            }, 500);
+            }, HIGHLIGHTTIME);
 
             return () => clearTimeout(timer);
         }
