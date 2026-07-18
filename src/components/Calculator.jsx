@@ -105,10 +105,17 @@ function Calculator() {
 
     useEffect(() => {
 
-
         const timer = setTimeout(() => {
 
-
+            // Do not calculate while the user is temporarily editing
+            if (
+                multiplier === "" ||
+                growthFactor === "" ||
+                referencePeriod === "" ||
+                comparisonPeriod === ""
+            ) {
+                return;
+            }
             if (lastEdited === "multiplier") {
 
 
@@ -124,15 +131,11 @@ function Calculator() {
                 setGrowthFactor(String(result));
             }
 
-
             if (lastEdited === "growthFactor") {
 
 
                 const result =
                     solveForMultiplier(
-                        // growthFactor,
-                        // referencePeriod,
-                        // comparisonPeriod
                         Number(growthFactor),
                         Number(referencePeriod),
                         Number(comparisonPeriod)
@@ -196,12 +199,12 @@ function Calculator() {
 
 
     const yearlyFactor = useMemo(
-        () => annualFactor(growthFactor),
+        () => annualFactor(Number(growthFactor)),
         [growthFactor]
     );
 
     const yearlyRate = useMemo(
-        () => annualGrowthRate(growthFactor),
+        () => annualGrowthRate(Number(growthFactor)),
         [growthFactor]
     );
 
@@ -238,16 +241,10 @@ function Calculator() {
 
                             ))
                     }
-
                 </select>
-
-
             </div>
 
-
             <div className="parameter-row">
-
-
                 <ParameterInput
                     title="Multiplier (m)"
                     value={multiplier}
@@ -277,9 +274,7 @@ function Calculator() {
 
             </div>
 
-
             <div className="growth-box">
-
 
                 <ParameterInput
                     title="Maximum monthly constant growth factor (r)"
@@ -288,10 +283,7 @@ function Calculator() {
                     step="0.0001"
                     onChange={handleGrowthFactor}
                 />
-
-
             </div>
-
 
             <ParameterInput
                 title="Annual price factor"
@@ -309,12 +301,8 @@ function Calculator() {
                 onChange={() => {
                 }}
             />
-
-
         </div>
-
     );
-
 }
 
 

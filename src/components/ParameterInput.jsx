@@ -8,16 +8,15 @@ function ParameterInput({
                             onChange,
                             decimals = null,
                             readOnly = false,
-                            step = "1"
+                            step = "1",
+                            highlightChanges = true
                         }) {
-    const [animationKey, setAnimationKey] = useState(0);
+    // const [animationKey, setAnimationKey] = useState(0);
     const [inputValue, setInputValue] = useState(String(value ?? ""));
     const [highlight, setHighlight] = useState(false);
 
+    const [isFocused, setIsFocused] = useState(false);
 
-    /*
-        Update displayed value when calculation changes it
-    */
     // useEffect(() => {
     //
     //     const newValue =
@@ -25,18 +24,20 @@ function ParameterInput({
     //             ? String(value ?? "")
     //             : Number(value).toFixed(decimals);
     //
-    //
     //     if (newValue !== inputValue) {
     //
     //         setInputValue(newValue);
     //
-    //         setHighlight(true);
+    //         if (highlightChanges) {
     //
-    //         const timer = setTimeout(() => {
-    //             setHighlight(false);
-    //         }, HIGHLIGHTTIME);
+    //             setHighlight(true);
     //
-    //         return () => clearTimeout(timer);
+    //             const timer = setTimeout(() => {
+    //                 setHighlight(false);
+    //             }, HIGHLIGHTTIME);
+    //
+    //             return () => clearTimeout(timer);
+    //         }
     //     }
     //
     // }, [value]);
@@ -47,17 +48,20 @@ function ParameterInput({
                 ? String(value ?? "")
                 : Number(value).toFixed(decimals);
 
+        setInputValue(newValue);
 
-        if (newValue !== inputValue) {
+        if (!isFocused && highlightChanges) {
 
-            setInputValue(newValue);
+            setHighlight(true);
 
-            setAnimationKey(k => k + 1);
+            const timer = setTimeout(() => {
+                setHighlight(false);
+            }, HIGHLIGHTTIME);
 
+            return () => clearTimeout(timer);
         }
 
     }, [value]);
-
 
     function handleChange(e) {
 
@@ -92,23 +96,13 @@ function ParameterInput({
                 {title}
             </label>
 
-
-            {/*<input*/}
-            {/*    className={highlight ? "updated" : ""}*/}
-            {/*    type="number"*/}
-            {/*    value={inputValue}*/}
-            {/*    readOnly={readOnly}*/}
-            {/*    onChange={handleChange}*/}
-            {/*    onBlur={handleBlur}*/}
-            {/*    step={step}*/}
-            {/*/>*/}
             <input
-                key={animationKey}
-                className="updated"
+                className={highlight ? "updated" : ""}
                 type="number"
                 value={inputValue}
                 readOnly={readOnly}
                 onChange={handleChange}
+                onFocus={() => setIsFocused(true)}
                 onBlur={handleBlur}
                 step={step}
             />

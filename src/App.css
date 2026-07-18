@@ -332,30 +332,38 @@ body {
 
 }
 
+/*.parameter input.updated {*/
+/*    animation: highlightInput 0.8s ease;*/
+/*}*/
+
+/*@keyframes highlightInput {*/
+/*    0% {*/
+/*        background-color: #e8f5e9;*/
+/*    }*/
+
+/*    100% {*/
+/*        background-color: white;*/
+/*    }*/
+/*}*/
+
+/*.updated {*/
+/*    animation: highlightInput 1s ease;*/
+/*}*/
+
+/*@keyframes highlightInput {*/
+/*    from {*/
+/*        background-color: #e8f5e9;*/
+/*    }*/
+
+/*    to {*/
+/*        background-color: white;*/
+/*    }*/
+/*}*/
+
+.parameter input {
+    transition: background-color 1s ease;
+}
+
 .parameter input.updated {
-    animation: highlightInput 0.8s ease;
-}
-
-@keyframes highlightInput {
-    0% {
-        background-color: #e8f5e9;
-    }
-
-    100% {
-        background-color: white;
-    }
-}
-
-.updated {
-    animation: highlightInput 1s ease;
-}
-
-@keyframes highlightInput {
-    from {
-        background-color: #e8f5e9;
-    }
-
-    to {
-        background-color: white;
-    }
+    background-color: #d8ffd8;
 }
