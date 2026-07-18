@@ -345,3 +345,17 @@ body {
         background-color: white;
     }
 }
+
+.updated {
+    animation: highlightInput 1s ease;
+}
+
+@keyframes highlightInput {
+    from {
+        background-color: #e8f5e9;
+    }
+
+    to {
+        background-color: white;
+    }
+}

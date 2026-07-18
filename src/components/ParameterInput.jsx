@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
+
 const HIGHLIGHTTIME = 1000;
 
 function ParameterInput({
-    title,
-    value,
-    onChange,
-    decimals = null,
-    readOnly = false,
-    step = "1"
-}) {
-
+                            title,
+                            value,
+                            onChange,
+                            decimals = null,
+                            readOnly = false,
+                            step = "1"
+                        }) {
+    const [animationKey, setAnimationKey] = useState(0);
     const [inputValue, setInputValue] = useState(String(value ?? ""));
     const [highlight, setHighlight] = useState(false);
 
@@ -17,6 +18,28 @@ function ParameterInput({
     /*
         Update displayed value when calculation changes it
     */
+    // useEffect(() => {
+    //
+    //     const newValue =
+    //         decimals === null
+    //             ? String(value ?? "")
+    //             : Number(value).toFixed(decimals);
+    //
+    //
+    //     if (newValue !== inputValue) {
+    //
+    //         setInputValue(newValue);
+    //
+    //         setHighlight(true);
+    //
+    //         const timer = setTimeout(() => {
+    //             setHighlight(false);
+    //         }, HIGHLIGHTTIME);
+    //
+    //         return () => clearTimeout(timer);
+    //     }
+    //
+    // }, [value]);
     useEffect(() => {
 
         const newValue =
@@ -29,13 +52,8 @@ function ParameterInput({
 
             setInputValue(newValue);
 
-            setHighlight(true);
+            setAnimationKey(k => k + 1);
 
-            const timer = setTimeout(() => {
-                setHighlight(false);
-            }, HIGHLIGHTTIME);
-
-            return () => clearTimeout(timer);
         }
 
     }, [value]);
@@ -75,8 +93,18 @@ function ParameterInput({
             </label>
 
 
+            {/*<input*/}
+            {/*    className={highlight ? "updated" : ""}*/}
+            {/*    type="number"*/}
+            {/*    value={inputValue}*/}
+            {/*    readOnly={readOnly}*/}
+            {/*    onChange={handleChange}*/}
+            {/*    onBlur={handleBlur}*/}
+            {/*    step={step}*/}
+            {/*/>*/}
             <input
-                className={highlight ? "updated" : ""}
+                key={animationKey}
+                className="updated"
                 type="number"
                 value={inputValue}
                 readOnly={readOnly}
@@ -84,7 +112,6 @@ function ParameterInput({
                 onBlur={handleBlur}
                 step={step}
             />
-
         </div>
 
     );

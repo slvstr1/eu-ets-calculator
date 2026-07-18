@@ -114,9 +114,6 @@ function Calculator() {
 
                 const result =
                     solveForGrowthFactor(
-                        // multiplier,
-                        // referencePeriod,
-                        // comparisonPeriod
                         Number(multiplier),
                         Number(referencePeriod),
                         Number(comparisonPeriod)
@@ -263,7 +260,7 @@ function Calculator() {
                     title="Reference Period (months)"
                     value={referencePeriod}
                     onChange={(e) =>
-                        setReferencePeriod(Number(e))
+                        setReferencePeriod(e)
                     }
                     step="1"
                 />
@@ -272,7 +269,7 @@ function Calculator() {
                     title="Recent Comparison Period (months)"
                     value={comparisonPeriod}
                     onChange={(e) =>
-                        setComparisonPeriod(Number(e))
+                        setComparisonPeriod(e)
                     }
                     step="1"
                 />
