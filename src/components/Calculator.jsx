@@ -288,6 +288,7 @@ function Calculator() {
                     title="Maximum monthly constant growth factor (r)"
                     value={growthFactor}
                     decimals={4}
+                      step="0.0001"
                     onChange={handleGrowthFactor}
                 />
 
@@ -299,6 +300,7 @@ function Calculator() {
                 title="Annual price factor"
                 value={yearlyFactor}
                 decimals={2}
+                  step="0.01"
                 onChange={handleAnnualFactor}
             />
 
@@ -306,14 +308,11 @@ function Calculator() {
                 title="Annual growth rate (%)"
                 value={yearlyRate * 100}
                 decimals={2}
+                  step="0.0001"
                 onChange={() => {
                 }}
             />
 
-            {/*<ResultCard*/}
-            {/*    annualFactor={yearlyFactor}*/}
-            {/*    annualRate={yearlyRate}*/}
-            {/*/>*/}
 
 
         </div>
