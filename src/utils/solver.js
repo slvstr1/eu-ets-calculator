@@ -223,3 +223,19 @@ export function annualGrowthRate(
     return annualFactor(growthFactor) - 1;
 
 }
+
+/*
+    Convert annual price factor into monthly growth factor.
+    Example:     2.16 gives 1.0665
+*/
+
+export function monthlyFactorFromAnnualFactor(
+    annualFactor
+) {
+
+    return Math.pow(
+        annualFactor,
+        1 / 12
+    );
+
+}

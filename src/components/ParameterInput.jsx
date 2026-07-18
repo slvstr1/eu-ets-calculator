@@ -2,10 +2,11 @@ import React from "react";
 
 
 function ParameterInput({
-    title,
-    value,
-    onChange
-}) {
+                            title,
+                            value,
+                            onChange,
+                            decimals = null
+                        }) {
 
     return (
 
@@ -19,6 +20,11 @@ function ParameterInput({
             <input
                 type="number"
                 value={value}
+                // value={
+                //     decimals === null || value === ""
+                //         ? value
+                //         : Number(value).toFixed(decimals)
+                // }
                 onChange={(e) => onChange(e.target.value)}
                 step="0.0001"
             />

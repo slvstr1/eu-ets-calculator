@@ -143,7 +143,7 @@ function Calculator() {
 
 
                 <ParameterInput
-                    title="Maximum continuous growth factor (r)"
+                    title="Maximum constant growth factor (r)"
                     value={growthFactor}
                     onChange={handleGrowthFactor}
                 />

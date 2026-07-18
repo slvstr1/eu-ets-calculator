@@ -16,19 +16,19 @@ function App() {
                         EU ETS Price Containment Mechanism Calculator
                     </h1>
 
-                    <p>
+                    <h2>
                         This calculator determines the relationship between
                         the legal parameters of EU ETS price containment
-                        mechanisms and the maximum continuous permit price
+                        mechanisms and the maximum constant permit price
                         growth that can occur without triggering intervention.
-                    </p>
+                    </h2>
 
-                    <p>
-                        Modify the multiplier or the maximum continuous growth
+                    <h2>
+                        Modify the multiplier or the maximum constant growth
                         factor. The calculator solves for the corresponding
                         value while keeping the Reference Period and Recent
                         Comparison Period fixed.
-                    </p>
+                    </h2>
 
                 </header>
 

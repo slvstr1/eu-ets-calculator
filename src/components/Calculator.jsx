@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, {useState, useEffect, useMemo} from "react";
 
 import ParameterInput from "./ParameterInput.jsx";
 import ResultCard from "./ResultCard.jsx";
@@ -7,7 +7,8 @@ import {
     solveForGrowthFactor,
     solveForMultiplier,
     annualFactor,
-    annualGrowthRate
+    annualGrowthRate,
+    monthlyFactorFromAnnualFactor
 } from "../utils/solver.js";
 
 
@@ -51,7 +52,6 @@ const presets = {
 };
 
 
-
 function Calculator() {
 
 
@@ -78,7 +78,6 @@ function Calculator() {
         useState("ets1");
 
 
-
     /*
         Apply preset values
     */
@@ -98,7 +97,6 @@ function Calculator() {
         setLastEdited("multiplier");
 
     }
-
 
 
     /*
@@ -127,7 +125,6 @@ function Calculator() {
             }
 
 
-
             if (lastEdited === "growthFactor") {
 
 
@@ -147,7 +144,6 @@ function Calculator() {
         }, 500);
 
 
-
         return () => clearTimeout(timer);
 
 
@@ -158,8 +154,6 @@ function Calculator() {
         comparisonPeriod,
         lastEdited
     ]);
-
-
 
 
     function handleMultiplier(value) {
@@ -173,7 +167,6 @@ function Calculator() {
     }
 
 
-
     function handleGrowthFactor(value) {
 
         setGrowthFactor(Number(value));
@@ -184,22 +177,34 @@ function Calculator() {
 
     }
 
+    function handleAnnualFactor(value) {
+
+        setGrowthFactor(
+            monthlyFactorFromAnnualFactor(
+                Number(value)
+            )
+        );
+
+        setLastEdited("growthFactor");
+
+        setPreset("custom");
+
+    }
 
 
     // const yearlyFactor =
     //     annualFactor(growthFactor);
     const yearlyFactor = useMemo(
-    () => annualFactor(growthFactor),
-    [growthFactor]
-);
+        () => annualFactor(growthFactor),
+        [growthFactor]
+    );
 
     // const yearlyRate =
     //     annualGrowthRate(growthFactor);
     const yearlyRate = useMemo(
-    () => annualGrowthRate(growthFactor),
-    [growthFactor]
-);
-
+        () => annualGrowthRate(growthFactor),
+        [growthFactor]
+    );
 
 
     return (
@@ -223,24 +228,22 @@ function Calculator() {
 
                     {
                         Object.entries(presets)
-                        .map(([key, value]) => (
+                            .map(([key, value]) => (
 
-                            <option
-                                key={key}
-                                value={key}
-                            >
-                                {value.name}
-                            </option>
+                                <option
+                                    key={key}
+                                    value={key}
+                                >
+                                    {value.name}
+                                </option>
 
-                        ))
+                            ))
                     }
 
                 </select>
 
 
             </div>
-
-
 
 
             <div className="parameter-row">
@@ -253,7 +256,6 @@ function Calculator() {
                 />
 
 
-
                 <ParameterInput
                     title="Reference Period (months)"
                     value={referencePeriod}
@@ -263,7 +265,6 @@ function Calculator() {
                         )
                     }
                 />
-
 
 
                 <ParameterInput
@@ -280,15 +281,13 @@ function Calculator() {
             </div>
 
 
-
-
-
             <div className="growth-box">
 
 
                 <ParameterInput
-                    title="Maximum continuous growth factor (r)"
+                    title="Maximum monthly constant growth factor (r)"
                     value={growthFactor}
+                    decimals={4}
                     onChange={handleGrowthFactor}
                 />
 
@@ -296,13 +295,25 @@ function Calculator() {
             </div>
 
 
-
-
-
-            <ResultCard
-                annualFactor={yearlyFactor}
-                annualRate={yearlyRate}
+            <ParameterInput
+                title="Annual price factor"
+                value={yearlyFactor}
+                decimals={2}
+                onChange={handleAnnualFactor}
             />
+
+            <ParameterInput
+                title="Annual growth rate (%)"
+                value={yearlyRate * 100}
+                decimals={2}
+                onChange={() => {
+                }}
+            />
+
+            {/*<ResultCard*/}
+            {/*    annualFactor={yearlyFactor}*/}
+            {/*    annualRate={yearlyRate}*/}
+            {/*/>*/}
 
 
         </div>
@@ -310,7 +321,6 @@ function Calculator() {
     );
 
 }
-
 
 
 export default Calculator;
