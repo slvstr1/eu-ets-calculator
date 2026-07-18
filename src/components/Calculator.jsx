@@ -1,47 +1,42 @@
 import React, {useState, useEffect, useMemo} from "react";
 
 import ParameterInput from "./ParameterInput.jsx";
-import ResultCard from "./ResultCard.jsx";
+// import ResultCard from "./ResultCard.jsx";
 
 import {
     solveForGrowthFactor,
     solveForMultiplier,
     annualFactor,
     annualGrowthRate,
-    // monthlyFactorFromAnnualFactor
+    monthlyFactorFromAnnualFactor
 } from "../utils/solver.js";
 
 const TIMEOUTCALC = 750
 const presets = {
-
     custom: {
         name: "Custom",
         multiplier: 2.4,
         referencePeriod: 24,
         comparisonPeriod: 6
     },
-
     ets1: {
         name: "ETS1 Article 29a",
         multiplier: 2.4,
         referencePeriod: 24,
         comparisonPeriod: 6
     },
-
     ets2early: {
         name: "ETS2 2027–2028",
         multiplier: 1.5,
         referencePeriod: 6,
         comparisonPeriod: 3
     },
-
     ets2small: {
         name: "ETS2 2029+ (50 million permits)",
         multiplier: 2,
         referencePeriod: 6,
         comparisonPeriod: 3
     },
-
     ets2large: {
         name: "ETS2 2029+ (150 million permits)",
         multiplier: 3,
@@ -57,7 +52,8 @@ function Calculator() {
         "Multiplier (m)": "2.4",
         "Reference Period (months)": "24",
         "Recent Comparison Period (months)": "6",
-        "Maximum monthly constant growth factor (r)": "1.0665"
+        "Maximum monthly constant growth factor (r)": "1.0665",
+        "Annual price factor": "2.16"
     });
 
 
@@ -132,6 +128,28 @@ function Calculator() {
 
                 setValues(prev => ({
                     ...prev,
+                    "Multiplier (m)":
+                        result.toFixed(2)
+                }));
+            }
+            if (activeField === "Annual price factor") {
+
+                const monthly =
+                    monthlyFactorFromAnnualFactor(
+                        Number(values["Annual price factor"])
+                    );
+
+                const result =
+                    solveForMultiplier(
+                        monthly,
+                        referencePeriod,
+                        comparisonPeriod
+                    );
+
+                setValues(prev => ({
+                    ...prev,
+                    "Maximum monthly constant growth factor (r)":
+                        monthly.toFixed(4),
                     "Multiplier (m)":
                         result.toFixed(2)
                 }));
@@ -243,15 +261,22 @@ function Calculator() {
                 />
             </div>
 
+            {/*<ParameterInput*/}
+            {/*    title="Annual price factor"*/}
+            {/*    // value={values["Annual price factor"]}*/}
+            {/*    value={yearlyFactor}*/}
+            {/*    decimals={2}*/}
+            {/*    step="0.01"*/}
+            {/*    // onChange={handleChange}*/}
+            {/*    // onFocus={handleFocus}*/}
+            {/*    readOnly={true}*/}
+            {/*/>*/}
             <ParameterInput
                 title="Annual price factor"
-                // value={values["Annual price factor"]}
-                value={yearlyFactor}
-                decimals={2}
+                value={values["Annual price factor"]}
+                onChange={handleChange}
+                onFocus={handleFocus}
                 step="0.01"
-                // onChange={handleChange}
-                // onFocus={handleFocus}
-                readOnly={true}
             />
 
             <ParameterInput
