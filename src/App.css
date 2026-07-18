@@ -1,16 +1,11 @@
 /* General page */
-
 * {
     box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    font-family: "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background: #f4f6f8;
     color: #222;
 }
@@ -30,7 +25,6 @@ body {
 }
 
 /* Header */
-
 .header {
     background: white;
     padding: 30px 35px;
@@ -59,18 +53,37 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Three top parameters */
+/* Preset selector */
+.preset {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+}
 
+.preset label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.preset select {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #cfd6dd;
+    background: white;
+}
+
+/* Three top parameters */
 .parameter-row {
     display: grid;
-    grid-template-columns:
-        repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 25px;
     margin-bottom: 30px;
 }
 
 /* Input component */
-
 .parameter {
     display: flex;
     flex-direction: column;
@@ -83,7 +96,16 @@ body {
     color: #333;
 }
 
-
+/* Base input style with transition for smooth fade-back */
+.parameter input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 18px;
+    border-radius: 8px;
+    border: 1px solid #cfd6dd;
+    background-color: #ffffff;
+    transition: background-color 1s ease;
+}
 
 .parameter input:focus {
     outline: none;
@@ -91,25 +113,24 @@ body {
     background: white;
 }
 
-/* Growth factor box */
+/* Highlighted state (changes instantly when updated) */
+.parameter input.updated {
+    background-color: #fff9c4; /* Soft yellow (change to #d8ffd8 for green) */
+    transition: none;
+}
 
+/* Growth factor box */
 .growth-box {
     margin-top: 10px;
     max-width: 350px;
 }
 
-
 /* Results */
-
 .result-card {
     margin-top: 35px;
     padding: 25px;
     border-radius: 12px;
-    background: linear-gradient(
-            135deg,
-            #eaf3ff,
-            #f7fbff
-    );
+    background: linear-gradient(135deg, #eaf3ff, #f7fbff);
     border-left: 5px solid #2878c8;
 }
 
@@ -150,62 +171,4 @@ body {
         flex-direction: column;
         gap: 20px;
     }
-}
-
-.preset {
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-}
-
-.preset label {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.preset select {
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #cfd6dd;
-    background: white;
-}
-
-.parameter input.updated {
-    animation: highlightInput 1s ease;
-}
-
-@keyframes highlightInput {
-    from {
-        background-color: #d8ffd8;
-    }
-
-    to {
-        background-color: #fafafa;
-    }
-}
-
-
-.parameter input {
-    width: 100%;
-    padding: 12px 14px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 1px solid #cfd6dd;
-    background: #fafafa;
-    transition: background-color 1s ease;
-}
-
-/* Normal state with a smooth transition back */
-.parameter input {
-    background-color: #ffffff; /* Or your current input background */
-    transition: background-color 1s ease;
-}
-
-/* Updated state (applies immediately) */
-.parameter input.updated {
-    background-color: #fff9c4; /* Soft yellow highlight color */
-    transition: none; /* Instant feedback on update */
 }
