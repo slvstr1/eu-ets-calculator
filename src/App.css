@@ -389,3 +389,143 @@ body {
         transform: translate(-50%, 0);
     }
 }
+
+/* Header wrapper for positioning */
+.header-wrapper {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.header {
+    background: white;
+    padding: 30px 35px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid transparent;
+}
+
+/* Header hover effect */
+.header:hover {
+    border-color: #2878c8;
+    box-shadow: 0 6px 20px rgba(40, 120, 200, 0.18);
+}
+
+/* Interactive hover effects for inputs & dropdowns */
+.parameter input:hover,
+.preset select:hover {
+    border-color: #2878c8;
+}
+
+/* Pop-up Balloon Style (Hidden by default) */
+.header-balloon {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    width: 100%;
+    max-width: 680px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.18);
+    border-radius: 12px;
+    padding: 22px 28px;
+    z-index: 1000;
+
+    /* Smooth CSS fade and slide-in */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+    pointer-events: none;
+}
+
+/* Display the balloon when hovering over the header */
+.header-wrapper:hover .header-balloon {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Top Arrow pointing to Header */
+.header-balloon::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 9px;
+    border-style: solid;
+    border-color: transparent transparent #cbd5e1 transparent;
+}
+
+.header-balloon::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent #ffffff transparent;
+}
+
+.balloon-title {
+    margin: 0 0 12px 0;
+    font-size: 15px;
+    color: #334155;
+    font-weight: 500;
+}
+
+.balloon-explanation {
+    margin: 14px 0 0 0;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.5;
+}
+
+/* Styled Math Formula */
+.math-formula {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+    color: #0f172a;
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.math-var {
+    font-style: italic;
+    font-weight: 600;
+}
+
+.math-op {
+    font-size: 18px;
+    margin: 0 2px;
+}
+
+.fraction {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 4px;
+    vertical-align: middle;
+}
+
+.fraction .numerator {
+    border-bottom: 1.5px solid #334155;
+    padding-bottom: 3px;
+    text-align: center;
+    width: 100%;
+}
+
+.fraction .denominator {
+    padding-top: 3px;
+    text-align: center;
+    width: 100%;
+}
