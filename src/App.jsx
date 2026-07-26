@@ -24,16 +24,17 @@ function App() {
                     </h4>
 
                     <h4>
-                        Modify the multiplier or the maximum constant growth
-                        factor. The calculator solves for the corresponding
-                        value while keeping the Reference Period and Recent
-                        Comparison Period fixed.
+                        Modify any of the fields and the calculator solves for the corresponding
+                        values of the other fields.
                     </h4>
 
+                    <h5>Accompanying the paper Silvester van Koten, 2026. "the Price Containment Mechanism"
+                    </h5>
                 </header>
 
 
                 <Calculator />
+
 
             </div>
 

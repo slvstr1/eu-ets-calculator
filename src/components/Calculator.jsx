@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useMemo} from "react";
 
 import ParameterInput from "./ParameterInput.jsx";
-// import ResultCard from "./ResultCard.jsx";
+import PriceGraph from "./PriceGraph.jsx";
 
 import {
     solveForGrowthFactor, solveForMultiplier, annualFactor, annualGrowthRate, monthlyFactorFromAnnualFactor
@@ -42,8 +42,6 @@ function Calculator() {
 
         const keysToHighlight = Object.keys(updates);
 
-        // Since Annual growth rate (%) is calculated, highlight it whenever
-        // the constant growth factor or the annual price factor is updated.
         if ("Maximum monthly constant growth factor (r)" in updates || "Annual price factor" in updates) {
             keysToHighlight.push("Annual growth rate (%)");
         }
@@ -55,9 +53,6 @@ function Calculator() {
         }, 1000);
     }
 
-    /*
-        Apply preset values
-    */
     function applyPreset(key) {
         const p = presets[key];
         setPreset(key);
@@ -85,13 +80,10 @@ function Calculator() {
             const referencePeriod = Number(values["Reference Period (months)"]);
             const comparisonPeriod = Number(values["Recent Comparison Period (months)"]);
 
-            // Safeguard to prevent division-by-zero or mathematically invalid periods in the solver
             if (referencePeriod <= 0 || comparisonPeriod <= 0) {
                 return;
             }
 
-            // If the user modifies the Multiplier or either of the periods,
-            // we hold the Multiplier constant and solve for the growth factor.
             if (
                 activeField === "Multiplier (m)" ||
                 activeField === "Reference Period (months)" ||
@@ -156,8 +148,6 @@ function Calculator() {
             ...prev, [title]: value
         }));
 
-        // If the user manually changes the multiplier or either period,
-        // we reset the selected dropdown preset to "custom"
         if (
             title === "Multiplier (m)" ||
             title === "Reference Period (months)" ||
@@ -173,23 +163,16 @@ function Calculator() {
     return (
         <div className="calculator">
             <div className="preset">
-                <label>
-                    Select EU ETS mechanism
-                </label>
-
+                <label>Select EU ETS mechanism</label>
                 <select
                     value={preset}
                     onChange={(e) => applyPreset(e.target.value)}
                 >
-                    {Object.entries(presets)
-                        .map(([key, value]) => (
-                            <option
-                                key={key}
-                                value={key}
-                            >
-                                {value.name}
-                            </option>
-                        ))}
+                    {Object.entries(presets).map(([key, value]) => (
+                        <option key={key} value={key}>
+                            {value.name}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -222,34 +205,45 @@ function Calculator() {
                 />
             </div>
 
-            <div className="growth-box">
-                <ParameterInput
-                    title="Maximum monthly constant growth factor (r)"
-                    value={values["Maximum monthly constant growth factor (r)"]}
-                    step="0.001"
-                    onChange={handleChange}
-                    onFocus={handleFocus}
-                    highlight={highlightFields.includes("Maximum monthly constant growth factor (r)")}
-                />
+            {/* Two-column layout: Inputs on left, Graph on right */}
+            <div className="calculator-body">
+                <div className="growth-column">
+                    <ParameterInput
+                        title="Maximum monthly constant growth factor (r)"
+                        value={values["Maximum monthly constant growth factor (r)"]}
+                        step="0.001"
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        highlight={highlightFields.includes("Maximum monthly constant growth factor (r)")}
+                    />
+
+                    <ParameterInput
+                        title="Annual price factor"
+                        value={values["Annual price factor"]}
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        step="0.01"
+                        highlight={highlightFields.includes("Annual price factor")}
+                    />
+
+                    <ParameterInput
+                        title="Annual growth rate (%)"
+                        value={(yearlyRate * 100).toFixed(2)}
+                        decimals={2}
+                        step="0.0001"
+                        readOnly={true}
+                        highlight={highlightFields.includes("Annual growth rate (%)")}
+                    />
+                </div>
+
+                <div className="graph-column">
+                    <PriceGraph
+                        growthFactor={Number(values["Maximum monthly constant growth factor (r)"])}
+                        referencePeriod={Number(values["Reference Period (months)"])}
+                        comparisonPeriod={Number(values["Recent Comparison Period (months)"])}
+                    />
+                </div>
             </div>
-
-            <ParameterInput
-                title="Annual price factor"
-                value={values["Annual price factor"]}
-                onChange={handleChange}
-                onFocus={handleFocus}
-                step="0.01"
-                highlight={highlightFields.includes("Annual price factor")}
-            />
-
-            <ParameterInput
-                title="Annual growth rate (%)"
-                value={(yearlyRate * 100).toFixed(2)}
-                decimals={2}
-                step="0.0001"
-                readOnly={true}
-                highlight={highlightFields.includes("Annual growth rate (%)")}
-            />
         </div>
     );
 }

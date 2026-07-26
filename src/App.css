@@ -172,3 +172,68 @@ body {
         gap: 20px;
     }
 }
+
+/* Two-column layout */
+.calculator-body {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    margin-top: 25px;
+}
+
+/* Left column (inputs aligned to the left, smaller width) */
+.growth-column {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* Right column (graph container) */
+.graph-column {
+    flex: 1;
+    min-width: 0; /* Ensures graph scales nicely inside flex layout */
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* Graph Header */
+.graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+
+.graph-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #163a5f;
+}
+
+.graph-subtitle {
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* SVG Responsiveness */
+.price-graph-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Responsive adjustment for small screens */
+@media (max-width: 850px) {
+    .calculator-body {
+        flex-direction: column;
+    }
+
+    .growth-column {
+        width: 100%;
+    }
+}
