@@ -453,3 +453,60 @@ body {
         overflow-x: auto; /* Allows formula to scroll horizontally on small screens if needed */
     }
 }
+
+/* Custom styling for react-widgets NumberPicker */
+.rw-number-picker {
+    border-radius: 8px;
+    border: 1px solid #cfd6dd;
+    background-color: #ffffff;
+    transition: background-color 2.5s ease, border-color 0.2s ease;
+}
+
+.rw-number-picker:hover {
+    border-color: #2878c8;
+}
+
+.rw-number-picker.rw-state-focus {
+    border-color: #2878c8;
+    box-shadow: 0 0 0 2px rgba(40, 120, 200, 0.2);
+}
+
+.rw-input {
+    font-size: 18px;
+    padding: 10px 14px;
+    color: #222;
+    background-color: transparent;
+}
+
+/* Highlighted state (yellow animation) for react-widgets */
+.rw-number-picker.updated,
+.rw-number-picker.updated .rw-input {
+    background-color: #fff9c4 !important;
+    transition: none !important;
+}
+
+/* Touch-friendly up/down buttons */
+.rw-picker-btn {
+    color: #475569;
+}
+
+.rw-picker-btn:hover {
+    background-color: #f1f5f9;
+}
+
+/* Mobile Responsive Adjustments for NumberPicker */
+@media (max-width: 768px) {
+    .rw-number-picker {
+        border-radius: 6px;
+    }
+
+    .rw-input {
+        font-size: 16px;
+        padding: 8px 10px;
+        height: 42px;
+    }
+
+    .rw-picker-btn {
+        padding: 0 10px;
+    }
+}
