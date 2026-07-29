@@ -27,8 +27,9 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
     const plotWidth = width - padding.left - padding.right;
     const plotHeight = height - padding.top - padding.bottom;
 
-    const yMin = 90; // slightly below start price 100
-    const yMax = Math.max(startPrice * 1.2, maxPrice * 1.08);
+    // Y-axis starts strictly at base price 100
+    const yMin = 100;
+    const yMax = Math.max(startPrice * 1.25, maxPrice * 1.05);
 
     // Coordinate mapping functions
     const getX = (m) => padding.left + (m / totalMonths) * plotWidth;
@@ -39,17 +40,17 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
         .map((pt, i) => `${i === 0 ? "M" : "L"} ${getX(pt.month)} ${getY(pt.price)}`)
         .join(" ");
 
-    const areaD = `${pathD} L ${getX(totalMonths)} ${getY(yMin)} L ${getX(0)} ${getY(yMin)} Z`;
+    const areaD = `${pathD} L ${getX(totalMonths)} ${getY(100)} L ${getX(0)} ${getY(100)} Z`;
 
-    // 1. Standard uniform Y-axis ticks (e.g. 4 evenly spaced ticks)
+    // Standard Y-axis ticks starting at 100
     const standardTickCount = 4;
     const standardYTicks = [];
     for (let i = 0; i <= standardTickCount; i++) {
-        const val = yMin + (i / standardTickCount) * (yMax - yMin);
+        const val = 100 + (i / standardTickCount) * (yMax - 100);
         standardYTicks.push(val);
     }
 
-    // 2. Dedicated Year Ticks (Month 12, 24, 36...)
+    // Dedicated Year Ticks (Month 12, 24, 36...)
     const yearTicks = [];
     for (let yr = 1; yr * 12 <= totalMonths; yr++) {
         const m = yr * 12;
@@ -97,7 +98,7 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                 {/* Main trajectory curve */}
                 <path d={pathD} fill="none" stroke="#2878c8" strokeWidth="2.5" />
 
-                {/* Standard Y-Axis Ticks (Normal Ticks on Left) */}
+                {/* Standard Y-Axis Ticks (Starts at 100) */}
                 {standardYTicks.map((val, idx) => (
                     <g key={`y-tick-${idx}`}>
                         <line
@@ -112,7 +113,8 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                             y={getY(val) + 4}
                             textAnchor="end"
                             fontSize="11"
-                            fill="#64748b"
+                            fill={idx === 0 ? "#0f172a" : "#64748b"}
+                            fontWeight={idx === 0 ? "bold" : "normal"}
                         >
                             {val.toFixed(0)}
                         </text>
