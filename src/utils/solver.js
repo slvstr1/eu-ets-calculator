@@ -23,40 +23,59 @@
 */
 
 
+// function impliedMultiplier(
+//     growthFactor,
+//     referencePeriod,
+//     comparisonPeriod
+// ) {
+//
+//     const t = 1;
+//     const u = referencePeriod;
+//     const v = referencePeriod + comparisonPeriod;
+//
+//
+//     const numerator =
+//         (u - t + 1) /
+//         (v - u);
+//
+//
+//     const powerPart =
+//         (
+//             Math.pow(growthFactor, v - t + 1)
+//             -
+//             Math.pow(growthFactor, u - t + 1)
+//         )
+//         /
+//         (
+//             Math.pow(growthFactor, u - t + 1)
+//             -
+//             1
+//         );
+//
+//
+//     return numerator * powerPart;
+//
+// }
+
 function impliedMultiplier(
     growthFactor,
     referencePeriod,
     comparisonPeriod
 ) {
+    const P1 = referencePeriod;
+    const P2 = comparisonPeriod;
+    const r = growthFactor;
 
-    const t = 1;
-    const u = referencePeriod;
-    const v = referencePeriod + comparisonPeriod;
+    // Handle edge case r = 1 (limit as r -> 1 is 1)
+    if (Math.abs(r - 1) < 1e-9) {
+        return 1;
+    }
 
+    const ratio = P1 / P2;
+    const powerPart = (Math.pow(r, P1 + P2) - Math.pow(r, P1)) / (Math.pow(r, P1) - 1);
 
-    const numerator =
-        (u - t + 1) /
-        (v - u);
-
-
-    const powerPart =
-        (
-            Math.pow(growthFactor, v - t + 1)
-            -
-            Math.pow(growthFactor, u - t + 1)
-        )
-        /
-        (
-            Math.pow(growthFactor, u - t + 1)
-            -
-            1
-        );
-
-
-    return numerator * powerPart;
-
+    return ratio * powerPart;
 }
-
 
 
 /*
