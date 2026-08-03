@@ -510,3 +510,33 @@ body {
         padding: 0 10px;
     }
 }
+
+/* Shrink Mode Styling */
+.parameter-red label.label-red {
+    color: #dc2626 !important;
+    font-weight: 600;
+}
+
+.input-red {
+    color: #dc2626 !important;
+    border-color: #fca5a5 !important;
+    background-color: #fef2f2 !important;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-subtext {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #dc2626;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.text-red {
+    color: #dc2626 !important;
+}

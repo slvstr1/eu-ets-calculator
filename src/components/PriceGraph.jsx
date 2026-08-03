@@ -1,25 +1,21 @@
 import React from "react";
 
-function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
-    // Sanitize inputs
+function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod, isShrinkMode = false }) {
     const r = isNaN(growthFactor) || growthFactor <= 0 ? 1.0 : growthFactor;
     const rp = isNaN(referencePeriod) || referencePeriod <= 0 ? 24 : referencePeriod;
     const rcp = isNaN(comparisonPeriod) || comparisonPeriod <= 0 ? 6 : comparisonPeriod;
 
-    // Total time horizon in months (at least 24 months / 2 years)
     const totalMonths = Math.max(24, rp + rcp);
 
-    // Calculate price series starting at 100
     const points = [];
     for (let m = 0; m <= totalMonths; m++) {
         const price = 100 * Math.pow(r, m);
         points.push({ month: m, price });
     }
 
-    const startPrice = 100;
-    const maxPrice = points[points.length - 1].price;
+    const maxPriceInPoints = Math.max(...points.map(p => p.price));
+    const minPriceInPoints = Math.min(...points.map(p => p.price));
 
-    // Dimensions
     const width = 520;
     const height = 320;
     const padding = { top: 30, right: 30, bottom: 45, left: 85 };
@@ -27,30 +23,25 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
     const plotWidth = width - padding.left - padding.right;
     const plotHeight = height - padding.top - padding.bottom;
 
-    // Y-axis starts strictly at base price 100
-    const yMin = 100;
-    const yMax = Math.max(startPrice * 1.25, maxPrice * 1.05);
+    const yMin = Math.max(0, isShrinkMode ? minPriceInPoints * 0.9 : 90);
+    const yMax = isShrinkMode ? 110 : Math.max(120, maxPriceInPoints * 1.08);
 
-    // Coordinate mapping functions
     const getX = (m) => padding.left + (m / totalMonths) * plotWidth;
     const getY = (p) => padding.top + plotHeight - ((p - yMin) / (yMax - yMin)) * plotHeight;
 
-    // Build SVG path
     const pathD = points
         .map((pt, i) => `${i === 0 ? "M" : "L"} ${getX(pt.month)} ${getY(pt.price)}`)
         .join(" ");
 
-    const areaD = `${pathD} L ${getX(totalMonths)} ${getY(100)} L ${getX(0)} ${getY(100)} Z`;
+    const areaD = `${pathD} L ${getX(totalMonths)} ${getY(yMin)} L ${getX(0)} ${getY(yMin)} Z`;
 
-    // Standard Y-axis ticks starting at 100
     const standardTickCount = 4;
     const standardYTicks = [];
     for (let i = 0; i <= standardTickCount; i++) {
-        const val = 100 + (i / standardTickCount) * (yMax - 100);
+        const val = yMin + (i / standardTickCount) * (yMax - yMin);
         standardYTicks.push(val);
     }
 
-    // Dedicated Year Ticks (Month 12, 24, 36...)
     const yearTicks = [];
     for (let yr = 1; yr * 12 <= totalMonths; yr++) {
         const m = yr * 12;
@@ -64,22 +55,27 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
         });
     }
 
-    // X-axis ticks (every 6 or 12 months)
     const stepX = totalMonths > 36 ? 12 : 6;
     const xTicks = [];
     for (let m = 0; m <= totalMonths; m += stepX) {
         xTicks.push(m);
     }
 
+    // Color definitions based on mode
+    const mainColor = isShrinkMode ? "#dc2626" : "#2878c8";
+    const areaColor = isShrinkMode ? "rgba(220, 38, 38, 0.08)" : "rgba(40, 120, 200, 0.08)";
+    const dotColor = isShrinkMode ? "#b91c1c" : "#e67e22";
+
     return (
         <div className="price-graph-container">
             <div className="graph-header">
                 <h3>Price Projection</h3>
-                <span className="graph-subtitle">Base Price = 100</span>
+                <span className={`graph-subtitle ${isShrinkMode ? "text-red" : ""}`}>
+                    Base Price = 100 {isShrinkMode ? "(Shrink Regime)" : ""}
+                </span>
             </div>
 
             <svg viewBox={`0 0 ${width} ${height}`} className="price-graph-svg">
-                {/* Background Grid Lines */}
                 {standardYTicks.map((val, idx) => (
                     <line
                         key={`grid-y-${idx}`}
@@ -92,13 +88,9 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                     />
                 ))}
 
-                {/* Shaded area under curve */}
-                <path d={areaD} fill="rgba(40, 120, 200, 0.08)" />
+                <path d={areaD} fill={areaColor} />
+                <path d={pathD} fill="none" stroke={mainColor} strokeWidth="2.5" />
 
-                {/* Main trajectory curve */}
-                <path d={pathD} fill="none" stroke="#2878c8" strokeWidth="2.5" />
-
-                {/* Standard Y-Axis Ticks (Starts at 100) */}
                 {standardYTicks.map((val, idx) => (
                     <g key={`y-tick-${idx}`}>
                         <line
@@ -113,24 +105,21 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                             y={getY(val) + 4}
                             textAnchor="end"
                             fontSize="11"
-                            fill={idx === 0 ? "#0f172a" : "#64748b"}
-                            fontWeight={idx === 0 ? "bold" : "normal"}
+                            fill="#64748b"
                         >
                             {val.toFixed(0)}
                         </text>
                     </g>
                 ))}
 
-                {/* Dedicated Yearly Ticks & Indicators on Left Y-Axis */}
                 {yearTicks.map((yt) => (
                     <g key={`year-tick-${yt.year}`}>
-                        {/* Reference line to curve */}
                         <line
                             x1={padding.left}
                             y1={yt.y}
                             x2={yt.x}
                             y2={yt.y}
-                            stroke="#e67e22"
+                            stroke={dotColor}
                             strokeDasharray="3,3"
                             strokeWidth="1.2"
                         />
@@ -139,18 +128,17 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                             y1={yt.y}
                             x2={yt.x}
                             y2={height - padding.bottom}
-                            stroke="#e67e22"
+                            stroke={dotColor}
                             strokeDasharray="3,3"
                             strokeWidth="1.2"
                         />
 
-                        {/* Highlighted Y-axis tick mark on the left */}
                         <line
                             x1={padding.left - 8}
                             y1={yt.y}
                             x2={padding.left}
                             y2={yt.y}
-                            stroke="#d35400"
+                            stroke={dotColor}
                             strokeWidth="2"
                         />
                         <text
@@ -159,20 +147,17 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                             textAnchor="end"
                             fontSize="11"
                             fontWeight="bold"
-                            fill="#d35400"
+                            fill={dotColor}
                         >
                             Yr {yt.year}: {yt.price.toFixed(0)}
                         </text>
 
-                        {/* Point on curve */}
-                        <circle cx={yt.x} cy={yt.y} r="4" fill="#e67e22" stroke="#ffffff" strokeWidth="1.5" />
+                        <circle cx={yt.x} cy={yt.y} r="4" fill={dotColor} stroke="#ffffff" strokeWidth="1.5" />
                     </g>
                 ))}
 
-                {/* Start Point (Month 0, Price 100) */}
-                <circle cx={getX(0)} cy={getY(100)} r="4" fill="#2878c8" />
+                <circle cx={getX(0)} cy={getY(100)} r="4" fill={mainColor} />
 
-                {/* Axes Lines */}
                 <line
                     x1={padding.left}
                     y1={height - padding.bottom}
@@ -190,7 +175,6 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                     strokeWidth="1.5"
                 />
 
-                {/* X-Axis Ticks (Time in Months) */}
                 {xTicks.map((m) => (
                     <g key={`x-tick-${m}`}>
                         <line
@@ -213,7 +197,6 @@ function PriceGraph({ growthFactor, referencePeriod, comparisonPeriod }) {
                     </g>
                 ))}
 
-                {/* Axis Labels */}
                 <text
                     x={padding.left + plotWidth / 2}
                     y={height - 8}

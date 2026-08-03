@@ -1,6 +1,4 @@
 import React from "react";
-import NumberPicker from "react-widgets/NumberPicker";
-import "react-widgets/styles.css";
 
 function ParameterInput({
     title,
@@ -10,35 +8,27 @@ function ParameterInput({
     readOnly = false,
     step = "1",
     highlight = false,
-    decimals = 4
+    isRed = false,
+    subText = null
 }) {
-    // Safely parse numeric value for NumberPicker
-    const numericValue =
-        value === "" || value === null || value === undefined || isNaN(Number(value))
-            ? null
-            : Number(value);
-
-    const numericStep = Number(step) || 1;
-
     return (
-        <div className="parameter">
-            <label>{title}</label>
-            <NumberPicker
-                className={highlight ? "updated" : ""}
-                value={numericValue}
-                readOnly={readOnly}
-                disabled={readOnly}
-                step={numericStep}
-                onFocus={() => onFocus && onFocus(title)}
-                onChange={(val) => {
-                    if (!readOnly && onChange) {
-                        onChange(
-                            title,
-                            val !== null && val !== undefined ? String(val) : ""
-                        );
-                    }
-                }}
-            />
+        <div className={`parameter ${isRed ? "parameter-red" : ""}`}>
+            <label className={isRed ? "label-red" : ""}>
+                {title}
+            </label>
+
+            <div className="input-wrapper">
+                <input
+                    className={`${highlight ? "updated" : ""} ${isRed ? "input-red" : ""}`}
+                    type="number"
+                    value={value ?? ""}
+                    readOnly={readOnly}
+                    onFocus={() => onFocus(title)}
+                    onChange={(e) => onChange(title, e.target.value)}
+                    step={step}
+                />
+                {subText && <span className="input-subtext">{subText}</span>}
+            </div>
         </div>
     );
 }
