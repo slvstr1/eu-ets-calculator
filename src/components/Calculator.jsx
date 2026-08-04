@@ -28,14 +28,14 @@ function Calculator() {
         "Multiplier (m)": "2.4",
         "Reference Period (months)": "24",
         "Recent Comparison Period (months)": "6",
-        "Monthly factor": "1.0665", // stores r (if growth) or s (if shrink)
+        "Maximum monthly constant growth factor (r)": "1.0665",
         "Annual price factor": "2.16"
     });
 
     const multiplierNum = Number(values["Multiplier (m)"]);
     const isShrinkMode = !isNaN(multiplierNum) && multiplierNum > 0 && multiplierNum < 1;
 
-    // Helper text for fraction (e.g. 1 / 2.40)
+    // Subtext for fraction (e.g. 1 / 2.40)
     const fractionText = useMemo(() => {
         if (isShrinkMode && multiplierNum > 0) {
             const denom = (1 / multiplierNum).toFixed(2);
@@ -48,7 +48,7 @@ function Calculator() {
         setValues(prev => ({ ...prev, ...updates }));
 
         const keysToHighlight = Object.keys(updates);
-        if ("Monthly factor" in updates || "Annual price factor" in updates) {
+        if ("Maximum monthly constant growth factor (r)" in updates || "Annual price factor" in updates) {
             keysToHighlight.push(isShrinkMode ? "Annual shrink rate (%)" : "Annual growth rate (%)");
         }
 
@@ -59,14 +59,11 @@ function Calculator() {
     function applyPreset(key) {
         const p = presets[key];
         setPreset(key);
-        const m = p.multiplier;
-        const isShrink = m < 1;
-
         setValues({
-            "Multiplier (m)": String(m),
+            "Multiplier (m)": String(p.multiplier),
             "Reference Period (months)": String(p.referencePeriod),
             "Recent Comparison Period (months)": String(p.comparisonPeriod),
-            "Monthly factor": isShrink ? "1.0665" : "1.0665"
+            "Maximum monthly constant growth factor (r)": "1.0665"
         });
 
         setActiveField("Multiplier (m)");
@@ -76,20 +73,19 @@ function Calculator() {
         if (!activeField) return;
 
         const timer = setTimeout(() => {
-            const mVal = values["Multiplier (m)"];
-            const rVal = values["Monthly factor"];
-            const rpVal = values["Reference Period (months)"];
-            const rcpVal = values["Recent Comparison Period (months)"];
+            if (
+                values["Multiplier (m)"] === "" ||
+                values["Reference Period (months)"] === "" ||
+                values["Recent Comparison Period (months)"] === ""
+            ) {
+                return;
+            }
 
-            if (mVal === "" || rVal === "" || rpVal === "" || rcpVal === "") return;
-
-            const multiplier = Number(mVal);
-            const referencePeriod = Number(rpVal);
-            const comparisonPeriod = Number(rcpVal);
+            const multiplier = Number(values["Multiplier (m)"]);
+            const referencePeriod = Number(values["Reference Period (months)"]);
+            const comparisonPeriod = Number(values["Recent Comparison Period (months)"]);
 
             if (referencePeriod <= 0 || comparisonPeriod <= 0 || multiplier <= 0) return;
-
-            const currentIsShrink = multiplier < 1;
 
             if (
                 activeField === "Multiplier (m)" ||
@@ -97,53 +93,35 @@ function Calculator() {
                 activeField === "Recent Comparison Period (months)"
             ) {
                 const r = solveForGrowthFactor(multiplier, referencePeriod, comparisonPeriod);
-                const factorToShow = currentIsShrink ? (1 / r) : r;
-                const annualVal = currentIsShrink ? annualFactor(1 / r) : annualFactor(r);
+                const nextGrowth = r.toFixed(4);
+                const nextAnnual = annualFactor(r).toFixed(2);
 
-                const nextFactorStr = factorToShow.toFixed(4);
-                const nextAnnualStr = annualVal.toFixed(2);
-
-                if (values["Monthly factor"] !== nextFactorStr || values["Annual price factor"] !== nextAnnualStr) {
+                if (
+                    values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
+                    values["Annual price factor"] !== nextAnnual
+                ) {
                     updateCalculatedFields({
-                        "Monthly factor": nextFactorStr,
-                        "Annual price factor": nextAnnualStr
-                    });
-                }
-            }
-
-            if (activeField === "Monthly factor") {
-                const factorInput = Number(values["Monthly factor"]);
-                const r = currentIsShrink ? (1 / factorInput) : factorInput;
-
-                const resultM = solveForMultiplier(r, referencePeriod, comparisonPeriod);
-                const annualVal = currentIsShrink ? annualFactor(1 / r) : annualFactor(r);
-
-                const nextMStr = resultM.toFixed(2);
-                const nextAnnualStr = annualVal.toFixed(2);
-
-                if (values["Multiplier (m)"] !== nextMStr || values["Annual price factor"] !== nextAnnualStr) {
-                    updateCalculatedFields({
-                        "Multiplier (m)": nextMStr,
-                        "Annual price factor": nextAnnualStr
+                        "Maximum monthly constant growth factor (r)": nextGrowth,
+                        "Annual price factor": nextAnnual
                     });
                 }
             }
 
             if (activeField === "Annual price factor") {
                 const annualVal = Number(values["Annual price factor"]);
-                const monthlyFac = monthlyFactorFromAnnualFactor(annualVal);
-                const r = currentIsShrink ? (1 / monthlyFac) : monthlyFac;
-
+                const r = monthlyFactorFromAnnualFactor(annualVal);
                 const resultM = solveForMultiplier(r, referencePeriod, comparisonPeriod);
-                const factorToShow = monthlyFac;
 
-                const nextFactorStr = factorToShow.toFixed(4);
-                const nextMStr = resultM.toFixed(2);
+                const nextGrowth = r.toFixed(4);
+                const nextMultiplier = resultM.toFixed(2);
 
-                if (values["Monthly factor"] !== nextFactorStr || values["Multiplier (m)"] !== nextMStr) {
+                if (
+                    values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
+                    values["Multiplier (m)"] !== nextMultiplier
+                ) {
                     updateCalculatedFields({
-                        "Monthly factor": nextFactorStr,
-                        "Multiplier (m)": nextMStr
+                        "Maximum monthly constant growth factor (r)": nextGrowth,
+                        "Multiplier (m)": nextMultiplier
                     });
                 }
             }
@@ -168,18 +146,20 @@ function Calculator() {
         }
     }
 
-    // Calculations for displayed rate
-    const displayedFactor = Number(values["Monthly factor"]);
-    const effectiveR = isShrinkMode ? (1 / displayedFactor) : displayedFactor;
+    const currentR = Number(values["Maximum monthly constant growth factor (r)"]);
 
+    // Calculate annual rate (%):
+    // Growth Mode: (r^12 - 1) * 100%
+    // Shrink Mode: (1 - r^12) * 100% (Positive shrink percentage)
     const yearlyRate = useMemo(() => {
+        if (isNaN(currentR) || currentR <= 0) return "0.00";
+        const factor12 = annualFactor(currentR);
         if (isShrinkMode) {
-            // Shrink rate % = (s^12 - 1) * 100%
-            return ((annualFactor(displayedFactor) - 1) * 100).toFixed(2);
+            return ((1 - factor12) * 100).toFixed(2);
         } else {
-            return (annualGrowthRate(effectiveR) * 100).toFixed(2);
+            return (annualGrowthRate(currentR) * 100).toFixed(2);
         }
-    }, [isShrinkMode, displayedFactor, effectiveR]);
+    }, [isShrinkMode, currentR]);
 
     return (
         <div className={`calculator ${isShrinkMode ? "shrink-active" : ""}`}>
@@ -228,17 +208,22 @@ function Calculator() {
             <div className="calculator-body">
                 <div className="growth-column">
                     <ParameterInput
-                        title={isShrinkMode ? "Minimum monthly constant shrink factor (s)" : "Maximum monthly constant growth factor (r)"}
-                        value={values["Monthly factor"]}
+                        title={
+                            isShrinkMode
+                                ? "Minimum monthly constant growth factor (r)"
+                                : "Maximum monthly constant growth factor (r)"
+                        }
+                        value={values["Maximum monthly constant growth factor (r)"]}
                         step="0.0001"
+                        readOnly={true}
                         onChange={handleChange}
                         onFocus={handleFocus}
-                        highlight={highlightFields.includes("Monthly factor")}
+                        highlight={highlightFields.includes("Maximum monthly constant growth factor (r)")}
                         isRed={isShrinkMode}
                     />
 
                     <ParameterInput
-                        title={isShrinkMode ? "Annual shrink factor" : "Annual price factor"}
+                        title="Annual price factor"
                         value={values["Annual price factor"]}
                         onChange={handleChange}
                         onFocus={handleFocus}
@@ -252,14 +237,17 @@ function Calculator() {
                         value={yearlyRate}
                         decimals={2}
                         readOnly={true}
-                        highlight={highlightFields.includes("Annual shrink rate (%)") || highlightFields.includes("Annual growth rate (%)")}
+                        highlight={
+                            highlightFields.includes("Annual shrink rate (%)") ||
+                            highlightFields.includes("Annual growth rate (%)")
+                        }
                         isRed={isShrinkMode}
                     />
                 </div>
 
                 <div className="graph-column">
                     <PriceGraph
-                        growthFactor={effectiveR}
+                        growthFactor={currentR}
                         referencePeriod={Number(values["Reference Period (months)"])}
                         comparisonPeriod={Number(values["Recent Comparison Period (months)"])}
                         isShrinkMode={isShrinkMode}

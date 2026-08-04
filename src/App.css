@@ -537,6 +537,39 @@ body {
     white-space: nowrap;
 }
 
+
 .text-red {
     color: #dc2626 !important;
+}
+
+/* Hide number spinner arrows across all input fields */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Red styling for shrink mode */
+.parameter-red label.label-red {
+    color: #dc2626 !important;
+    font-weight: 600;
+}
+
+
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-subtext {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #dc2626;
+    margin-left: 8px;
+    white-space: nowrap;
 }
