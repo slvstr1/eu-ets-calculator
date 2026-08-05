@@ -542,15 +542,15 @@ body {
     color: #dc2626 !important;
 }
 
-/* Hide number spinner arrows across all input fields */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input[type=number] {
-    -moz-appearance: textfield;
-}
+/*!* Hide number spinner arrows across all input fields *!*/
+/*input[type=number]::-webkit-inner-spin-button,*/
+/*input[type=number]::-webkit-outer-spin-button {*/
+/*    -webkit-appearance: none;*/
+/*    margin: 0;*/
+/*}*/
+/*input[type=number] {*/
+/*    -moz-appearance: textfield;*/
+/*}*/
 
 /* Red styling for shrink mode */
 .parameter-red label.label-red {
