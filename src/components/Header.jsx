@@ -29,22 +29,22 @@ function Header() {
                 <div className="math-formula">
                     <span className="math-var">m</span> =
                     <div className="fraction">
-                        <span className="numerator">#P<sub>1</sub></span>
-                        <span className="denominator">#P<sub>2</sub></span>
+                        <span className="numerator">P<sub>1</sub></span>
+                        <span className="denominator">P<sub>2</sub></span>
                     </div>
                     <span className="math-op">&times;</span>
                     <div className="fraction">
                         <span className="numerator">
-                            r<sup>(#P<sub>1</sub> + #P<sub>2</sub>)</sup> &minus; r<sup>#P<sub>1</sub></sup>
+                            r<sup>(P<sub>1</sub> + P<sub>2</sub>)</sup> &minus; r<sup>P<sub>1</sub></sup>
                         </span>
                         <span className="denominator">
-                            r<sup>(#P<sub>1</sub> + #P<sub>2</sub>)</sup> &minus; 1
+                            r<sup>(P<sub>1</sub> + P<sub>2</sub>)</sup> &minus; 1
                         </span>
                     </div>
                 </div>
 
                 <p className="balloon-explanation">
-                    Where <strong>m</strong> is the multiplier, <strong>#P<sub>1</sub></strong> and <strong>#P<sub>2</sub></strong> are the lengths of the first and second periods in months.
+                    Where <strong>m</strong> is the multiplier, <strong>P<sub>1</sub></strong> and <strong>P<sub>2</sub></strong> are the lengths of the first and second periods in months.
                 </p>
             </div>
         </div>

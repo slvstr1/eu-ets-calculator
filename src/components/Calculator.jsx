@@ -198,6 +198,64 @@ function Calculator() {
                 }
             }
 
+  //           // 4. User edited Annual Rate (%)
+  //           if (
+  //               activeField === rateTitle ||
+  //               activeField === "Annual rate (%)" ||
+  //               activeField === "Annual growth rate (%)" ||
+  //               activeField === "Annual shrink rate (%)"
+  //           ) {
+  //               const rate = Number(rateVal);
+  //               if (isNaN(rate)) return;
+  //
+  //               let annFac;
+  //               if (isShrinkMode) {
+  //                   annFac = 1 - rate / 100;
+  //               } else {
+  //                   annFac = 1 + rate / 100;
+  //               }
+  //
+  //               if (annFac <= 0) return;
+  //
+  //               const r = monthlyFactorFromAnnualFactor(annFac);
+  //               const resultM = solveForMultiplier(r, referencePeriod, comparisonPeriod);
+  //
+  //               const nextM = resultM.toFixed(2);
+  //               const nextR = r.toFixed(4);
+  //               const nextAnn = annFac.toFixed(2);
+  //
+  //
+  // // --- ADDED THIS LOGIC ---
+  //               const newIsShrink = resultM < 1;
+  //               const nextRateInNewMode = newIsShrink
+  //                   ? ((1 - annFac) * 100).toFixed(2)
+  //                   : ((annFac - 1) * 100).toFixed(2);
+  //
+  //               const updates = {
+  //                   "Multiplier (m)": nextM,
+  //                   "Monthly constant growth factor (r)": nextR,
+  //                   "Annual price factor": nextAnn
+  //               };
+  //
+  //               // If the mode flipped (e.g. from Growth to Shrink), convert rate in state to positive equivalent
+  //               if (newIsShrink !== isShrinkMode || values["Annual rate (%)"] !== nextRateInNewMode) {
+  //                   updates["Annual rate (%)"] = nextRateInNewMode;
+  //               }
+  //
+  //
+  //
+  //               if (
+  //                   values["Multiplier (m)"] !== nextM ||
+  //                   values["Monthly constant growth factor (r)"] !== nextR ||
+  //                   values["Annual price factor"] !== nextAnn
+  //               ) {
+  //                   updateCalculatedFields({
+  //                       "Multiplier (m)": nextM,
+  //                       "Monthly constant growth factor (r)": nextR,
+  //                       "Annual price factor": nextAnn
+  //                   });
+  //               }
+  //           }
             // 4. User edited Annual Rate (%)
             if (
                 activeField === rateTitle ||
@@ -224,8 +282,6 @@ function Calculator() {
                 const nextR = r.toFixed(4);
                 const nextAnn = annFac.toFixed(2);
 
-
-  // --- ADDED THIS LOGIC ---
                 const newIsShrink = resultM < 1;
                 const nextRateInNewMode = newIsShrink
                     ? ((1 - annFac) * 100).toFixed(2)
@@ -237,23 +293,18 @@ function Calculator() {
                     "Annual price factor": nextAnn
                 };
 
-                // If the mode flipped (e.g. from Growth to Shrink), convert rate in state to positive equivalent
+                // Convert rate in state to positive equivalent when crossing regimes
                 if (newIsShrink !== isShrinkMode || values["Annual rate (%)"] !== nextRateInNewMode) {
                     updates["Annual rate (%)"] = nextRateInNewMode;
                 }
 
+                // Check if any value actually changed before triggering update
+                const hasChanges = Object.entries(updates).some(
+                    ([key, val]) => values[key] !== val
+                );
 
-
-                if (
-                    values["Multiplier (m)"] !== nextM ||
-                    values["Monthly constant growth factor (r)"] !== nextR ||
-                    values["Annual price factor"] !== nextAnn
-                ) {
-                    updateCalculatedFields({
-                        "Multiplier (m)": nextM,
-                        "Monthly constant growth factor (r)": nextR,
-                        "Annual price factor": nextAnn
-                    });
+                if (hasChanges) {
+                    updateCalculatedFields(updates);
                 }
             }
         }, TIMEOUTCALC);
