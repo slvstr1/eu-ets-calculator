@@ -1,4 +1,6 @@
-/* General page */
+/* ========================================================= */
+/* GENERAL & LAYOUT                                         */
+/* ========================================================= */
 * {
     box-sizing: border-box;
 }
@@ -10,7 +12,6 @@ body {
     color: #222;
 }
 
-/* Main layout */
 .page {
     min-height: 100vh;
     display: flex;
@@ -24,7 +25,9 @@ body {
     max-width: 950px;
 }
 
-/* Header wrapper for positioning */
+/* ========================================================= */
+/* HEADER & POP-UP BALLOON                                  */
+/* ========================================================= */
 .header-wrapper {
     position: relative;
     margin-bottom: 25px;
@@ -40,7 +43,6 @@ body {
     border: 2px solid transparent;
 }
 
-/* Header hover effect */
 .header:hover {
     border-color: #2878c8;
     box-shadow: 0 6px 20px rgba(40, 120, 200, 0.18);
@@ -65,164 +67,7 @@ body {
     margin-top: 12px;
 }
 
-/* Calculator card */
-.calculator {
-    background: white;
-    padding: 35px;
-    border-radius: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-/* Preset selector */
-.preset {
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    max-width: 400px;
-}
-
-.preset label {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.preset select {
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #cfd6dd;
-    background: white;
-    transition: border-color 0.2s ease;
-}
-
-.preset select:hover {
-    border-color: #2878c8;
-}
-
-/* Three top parameters */
-.parameter-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-bottom: 30px;
-}
-
-/* Input component */
-.parameter {
-    display: flex;
-    flex-direction: column;
-}
-
-.parameter label {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #333;
-}
-
-/* Base input style with transition for smooth fade-back */
-.parameter input {
-    width: 100%;
-    padding: 12px 14px;
-    font-size: 18px;
-    border-radius: 8px;
-    border: 1px solid #cfd6dd;
-    background-color: #ffffff;
-    transition: background-color 2.5s ease, border-color 0.2s ease;
-}
-
-.parameter input:hover {
-    border-color: #2878c8;
-}
-
-.parameter input:focus {
-    outline: none;
-    border-color: #2878c8;
-    background: white;
-}
-
-/* Force up/down spinner arrows to appear on number inputs (Mobile & Webkit) */
-.parameter input[type="number"]::-webkit-inner-spin-button,
-.parameter input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: inner-spin-button !important;
-    opacity: 1 !important;
-    display: block !important;
-    height: 24px;
-    cursor: pointer;
-}
-
-.parameter input[type="number"] {
-    -moz-appearance: number-input !important;
-}
-
-/* Highlighted state (changes instantly when updated) */
-.parameter input.updated {
-    background-color: #fff9c4; /* Soft yellow */
-    transition: none;
-}
-
-/* Growth factor box */
-.growth-box {
-    margin-top: 10px;
-    max-width: 350px;
-}
-
-/* Two-column layout */
-.calculator-body {
-    display: flex;
-    gap: 25px;
-    align-items: flex-start;
-    margin-top: 25px;
-}
-
-/* Left column (inputs aligned to the left, smaller width) */
-.growth-column {
-    width: 320px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
-
-/* Right column (graph container) */
-.graph-column {
-    flex: 1;
-    min-width: 0; /* Ensures graph scales nicely inside flex layout */
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-/* Graph Header */
-.graph-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 10px;
-}
-
-.graph-header h3 {
-    margin: 0;
-    font-size: 18px;
-    color: #163a5f;
-}
-
-.graph-subtitle {
-    font-size: 13px;
-    color: #64748b;
-}
-
-/* SVG Responsiveness */
-.price-graph-svg {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-/* Pop-up Balloon Style (Hidden by default) */
+/* Pop-up Balloon (Formula Tooltip) */
 .header-balloon {
     position: absolute;
     top: calc(100% + 12px);
@@ -237,21 +82,19 @@ body {
     padding: 22px 28px;
     z-index: 1000;
 
-    /* Smooth CSS fade and slide-in */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
     pointer-events: none;
 }
 
-/* Display the balloon when hovering over the header */
 .header-wrapper:hover .header-balloon {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
 
-/* Top Arrow pointing to Header */
+/* Balloon Arrows */
 .header-balloon::before {
     content: "";
     position: absolute;
@@ -288,7 +131,7 @@ body {
     line-height: 1.5;
 }
 
-/* Styled Math Formula */
+/* Math Formula Layout */
 .math-formula {
     display: flex;
     align-items: center;
@@ -335,6 +178,196 @@ body {
 }
 
 /* ========================================================= */
+/* CALCULATOR LAYOUT                                        */
+/* ========================================================= */
+.calculator {
+    background: white;
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.preset {
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+.preset label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.preset select {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #cfd6dd;
+    background: white;
+    transition: border-color 0.2s ease;
+}
+
+.preset select:hover {
+    border-color: #2878c8;
+}
+
+.parameter-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.calculator-body {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    margin-top: 25px;
+}
+
+.growth-column {
+    width: 320px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.graph-column {
+    flex: 1;
+    min-width: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ========================================================= */
+/* INPUT COMPONENT & REACT-WIDGETS NUMBERPICKER              */
+/* ========================================================= */
+.parameter {
+    display: flex;
+    flex-direction: column;
+}
+
+.parameter label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-subtext {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #dc2626;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+/* react-widgets NumberPicker Custom Styling */
+.rw-number-picker {
+    width: 100%;
+    border-radius: 8px;
+    border: 1px solid #cfd6dd;
+    background-color: #ffffff;
+    transition: background-color 2.5s ease, border-color 0.2s ease;
+}
+
+.rw-number-picker:hover {
+    border-color: #2878c8;
+}
+
+.rw-number-picker.rw-state-focus {
+    border-color: #2878c8;
+    box-shadow: 0 0 0 2px rgba(40, 120, 200, 0.2);
+}
+
+.rw-input {
+    font-size: 18px;
+    padding: 10px 14px;
+    color: #222;
+    background-color: transparent;
+}
+
+/* Soft yellow highlight when parameter is calculated/updated */
+.rw-number-picker.updated,
+.rw-number-picker.updated .rw-input,
+.rw-number-picker.updated .rw-widget-picker {
+    background-color: #fff9c4 !important;
+    border-color: #eab308 !important;
+    transition: none !important;
+}
+
+.rw-picker-btn {
+    color: #475569;
+}
+
+.rw-picker-btn:hover {
+    background-color: #f1f5f9;
+}
+
+/* ========================================================= */
+/* SHRINK MODE STYLING (m < 1)                              */
+/* ========================================================= */
+.parameter-red label.label-red {
+    color: #dc2626 !important;
+    font-weight: 600;
+}
+
+.rw-number-picker.input-red,
+.rw-number-picker.input-red .rw-widget-picker {
+    border-color: #fca5a5 !important;
+    background-color: #fef2f2 !important;
+}
+
+.rw-number-picker.input-red input,
+.rw-number-picker.input-red .rw-input {
+    color: #dc2626 !important;
+}
+
+.text-red {
+    color: #dc2626 !important;
+}
+
+/* ========================================================= */
+/* GRAPH CONTAINER & HEADER                                 */
+/* ========================================================= */
+.graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+
+.graph-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #163a5f;
+}
+
+.graph-subtitle {
+    font-size: 13px;
+    color: #64748b;
+}
+
+.price-graph-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ========================================================= */
 /* MOBILE RESPONSIVE STYLES (< 768px)                       */
 /* ========================================================= */
 @media (max-width: 768px) {
@@ -346,7 +379,6 @@ body {
         max-width: 100%;
     }
 
-    /* Header Mobile Adjustments */
     .header {
         padding: 20px 18px;
         border-radius: 10px;
@@ -366,7 +398,6 @@ body {
         font-size: 13px;
     }
 
-    /* Calculator Mobile Adjustments */
     .calculator {
         padding: 20px 16px;
         border-radius: 10px;
@@ -389,22 +420,12 @@ body {
         border-radius: 6px;
     }
 
-    /* Top Parameters Grid to 1 column */
     .parameter-row {
         grid-template-columns: 1fr;
         gap: 16px;
         margin-bottom: 20px;
     }
 
-    /* Compact Mobile Inputs */
-    .parameter input {
-        padding: 8px 10px;
-        font-size: 16px; /* 16px prevents iOS Safari auto-zoom on focus */
-        height: 42px;
-        border-radius: 6px;
-    }
-
-    /* Two-column layout stacks vertically on mobile */
     .calculator-body {
         flex-direction: column;
         gap: 20px;
@@ -430,7 +451,7 @@ body {
         font-size: 11px;
     }
 
-    /* Mobile Balloon Tooltip Adjustments */
+    /* Mobile Tooltip Balloon Adjustments */
     .header-balloon {
         width: 95%;
         padding: 16px;
@@ -450,52 +471,10 @@ body {
         font-size: 14px;
         padding: 10px;
         gap: 6px;
-        overflow-x: auto; /* Allows formula to scroll horizontally on small screens if needed */
+        overflow-x: auto;
     }
-}
 
-/* Custom styling for react-widgets NumberPicker */
-.rw-number-picker {
-    border-radius: 8px;
-    border: 1px solid #cfd6dd;
-    background-color: #ffffff;
-    transition: background-color 2.5s ease, border-color 0.2s ease;
-}
-
-.rw-number-picker:hover {
-    border-color: #2878c8;
-}
-
-.rw-number-picker.rw-state-focus {
-    border-color: #2878c8;
-    box-shadow: 0 0 0 2px rgba(40, 120, 200, 0.2);
-}
-
-.rw-input {
-    font-size: 18px;
-    padding: 10px 14px;
-    color: #222;
-    background-color: transparent;
-}
-
-/* Highlighted state (yellow animation) for react-widgets */
-.rw-number-picker.updated,
-.rw-number-picker.updated .rw-input {
-    background-color: #fff9c4 !important;
-    transition: none !important;
-}
-
-/* Touch-friendly up/down buttons */
-.rw-picker-btn {
-    color: #475569;
-}
-
-.rw-picker-btn:hover {
-    background-color: #f1f5f9;
-}
-
-/* Mobile Responsive Adjustments for NumberPicker */
-@media (max-width: 768px) {
+    /* Mobile adjustments for NumberPicker */
     .rw-number-picker {
         border-radius: 6px;
     }
@@ -509,67 +488,4 @@ body {
     .rw-picker-btn {
         padding: 0 10px;
     }
-}
-
-/* Shrink Mode Styling */
-.parameter-red label.label-red {
-    color: #dc2626 !important;
-    font-weight: 600;
-}
-
-.input-red {
-    color: #dc2626 !important;
-    border-color: #fca5a5 !important;
-    background-color: #fef2f2 !important;
-}
-
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-subtext {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #dc2626;
-    margin-left: 8px;
-    white-space: nowrap;
-}
-
-
-.text-red {
-    color: #dc2626 !important;
-}
-
-/*!* Hide number spinner arrows across all input fields *!*/
-/*input[type=number]::-webkit-inner-spin-button,*/
-/*input[type=number]::-webkit-outer-spin-button {*/
-/*    -webkit-appearance: none;*/
-/*    margin: 0;*/
-/*}*/
-/*input[type=number] {*/
-/*    -moz-appearance: textfield;*/
-/*}*/
-
-/* Red styling for shrink mode */
-.parameter-red label.label-red {
-    color: #dc2626 !important;
-    font-weight: 600;
-}
-
-
-
-.input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.input-subtext {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #dc2626;
-    margin-left: 8px;
-    white-space: nowrap;
 }

@@ -11,6 +11,7 @@ import {
 } from "../utils/solver.js";
 
 const TIMEOUTCALC = 750;
+
 const presets = {
     custom: { name: "Custom", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6 },
     ets1: { name: "ETS1 Article 29a", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6 },
@@ -28,14 +29,24 @@ function Calculator() {
         "Multiplier (m)": "2.4",
         "Reference Period (months)": "24",
         "Recent Comparison Period (months)": "6",
-        "Maximum monthly constant growth factor (r)": "1.0665",
-        "Annual price factor": "2.16"
+        "Monthly constant growth factor (r)": "1.0665",
+        "Annual price factor": "2.16",
+        "Annual rate (%)": "116.00"
     });
 
     const multiplierNum = Number(values["Multiplier (m)"]);
     const isShrinkMode = !isNaN(multiplierNum) && multiplierNum > 0 && multiplierNum < 1;
 
-    // Subtext for fraction (e.g. 1 / 2.40)
+    // Titles for dynamic labels
+    const growthTitle = isShrinkMode
+        ? "Minimum monthly constant growth factor (r)"
+        : "Maximum monthly constant growth factor (r)";
+
+    const rateTitle = isShrinkMode
+        ? "Annual shrink rate (%)"
+        : "Annual growth rate (%)";
+
+    // Subtext for fraction display (e.g. 1 / 2.40)
     const fractionText = useMemo(() => {
         if (isShrinkMode && multiplierNum > 0) {
             const denom = (1 / multiplierNum).toFixed(2);
@@ -45,13 +56,9 @@ function Calculator() {
     }, [isShrinkMode, multiplierNum]);
 
     function updateCalculatedFields(updates) {
-        setValues(prev => ({ ...prev, ...updates }));
+        setValues((prev) => ({ ...prev, ...updates }));
 
         const keysToHighlight = Object.keys(updates);
-        if ("Maximum monthly constant growth factor (r)" in updates || "Annual price factor" in updates) {
-            keysToHighlight.push(isShrinkMode ? "Annual shrink rate (%)" : "Annual growth rate (%)");
-        }
-
         setHighlightFields(keysToHighlight);
         setTimeout(() => setHighlightFields([]), 1000);
     }
@@ -59,11 +66,20 @@ function Calculator() {
     function applyPreset(key) {
         const p = presets[key];
         setPreset(key);
+        const m = p.multiplier;
+        const isShrink = m < 1;
+
+        const r = solveForGrowthFactor(m, p.referencePeriod, p.comparisonPeriod);
+        const annFac = annualFactor(r);
+        const rate = isShrink ? (1 - annFac) * 100 : (annFac - 1) * 100;
+
         setValues({
-            "Multiplier (m)": String(p.multiplier),
+            "Multiplier (m)": String(m),
             "Reference Period (months)": String(p.referencePeriod),
             "Recent Comparison Period (months)": String(p.comparisonPeriod),
-            "Maximum monthly constant growth factor (r)": "1.0665"
+            "Monthly constant growth factor (r)": r.toFixed(4),
+            "Annual price factor": annFac.toFixed(2),
+            "Annual rate (%)": rate.toFixed(2)
         });
 
         setActiveField("Multiplier (m)");
@@ -73,93 +89,133 @@ function Calculator() {
         if (!activeField) return;
 
         const timer = setTimeout(() => {
-            if (
-                values["Multiplier (m)"] === "" ||
-                values["Reference Period (months)"] === "" ||
-                values["Recent Comparison Period (months)"] === ""
-            ) {
-                return;
-            }
+            const mVal = values["Multiplier (m)"];
+            const rVal = values["Monthly constant growth factor (r)"];
+            const rpVal = values["Reference Period (months)"];
+            const rcpVal = values["Recent Comparison Period (months)"];
+            const annVal = values["Annual price factor"];
+            const rateVal = values["Annual rate (%)"];
 
-            const multiplier = Number(values["Multiplier (m)"]);
-            const referencePeriod = Number(values["Reference Period (months)"]);
-            const comparisonPeriod = Number(values["Recent Comparison Period (months)"]);
+            const referencePeriod = Number(rpVal);
+            const comparisonPeriod = Number(rcpVal);
 
-            if (referencePeriod <= 0 || comparisonPeriod <= 0 || multiplier <= 0) return;
+            if (referencePeriod <= 0 || comparisonPeriod <= 0) return;
 
+            // 1. Inputs on Multiplier or Periods
             if (
                 activeField === "Multiplier (m)" ||
                 activeField === "Reference Period (months)" ||
                 activeField === "Recent Comparison Period (months)"
             ) {
-                const r = solveForGrowthFactor(multiplier, referencePeriod, comparisonPeriod);
-                const nextGrowth = r.toFixed(4);
-                const nextAnnual = annualFactor(r).toFixed(2);
+                const multiplier = Number(mVal);
+                if (multiplier <= 0 || isNaN(multiplier)) return;
 
-                if (
-                    values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
-                    values["Annual price factor"] !== nextAnnual
-                ) {
-                    updateCalculatedFields({
-                        "Maximum monthly constant growth factor (r)": nextGrowth,
-                        "Annual price factor": nextAnnual
-                    });
-                }
+                const r = solveForGrowthFactor(multiplier, referencePeriod, comparisonPeriod);
+                const annFac = annualFactor(r);
+                const isShrink = multiplier < 1;
+                const rate = isShrink ? (1 - annFac) * 100 : (annFac - 1) * 100;
+
+                updateCalculatedFields({
+                    "Monthly constant growth factor (r)": r.toFixed(4),
+                    "Annual price factor": annFac.toFixed(2),
+                    "Annual rate (%)": rate.toFixed(2)
+                });
             }
 
+            // 2. Input on Monthly Growth Factor (r)
+            if (
+                activeField === growthTitle ||
+                activeField === "Monthly constant growth factor (r)"
+            ) {
+                const r = Number(rVal);
+                if (r <= 0 || isNaN(r)) return;
+
+                const resultM = solveForMultiplier(r, referencePeriod, comparisonPeriod);
+                const annFac = annualFactor(r);
+                const isShrink = resultM < 1;
+                const rate = isShrink ? (1 - annFac) * 100 : (annFac - 1) * 100;
+
+                updateCalculatedFields({
+                    "Multiplier (m)": resultM.toFixed(2),
+                    "Annual price factor": annFac.toFixed(2),
+                    "Annual rate (%)": rate.toFixed(2)
+                });
+            }
+
+            // 3. Input on Annual Price Factor
             if (activeField === "Annual price factor") {
-                const annualVal = Number(values["Annual price factor"]);
-                const r = monthlyFactorFromAnnualFactor(annualVal);
+                const annFac = Number(annVal);
+                if (annFac <= 0 || isNaN(annFac)) return;
+
+                const r = monthlyFactorFromAnnualFactor(annFac);
+                const resultM = solveForMultiplier(r, referencePeriod, comparisonPeriod);
+                const isShrink = resultM < 1;
+                const rate = isShrink ? (1 - annFac) * 100 : (annFac - 1) * 100;
+
+                updateCalculatedFields({
+                    "Multiplier (m)": resultM.toFixed(2),
+                    "Monthly constant growth factor (r)": r.toFixed(4),
+                    "Annual rate (%)": rate.toFixed(2)
+                });
+            }
+
+            // 4. Input on Annual Rate (%)
+            if (
+                activeField === rateTitle ||
+                activeField === "Annual rate (%)" ||
+                activeField === "Annual growth rate (%)" ||
+                activeField === "Annual shrink rate (%)"
+            ) {
+                const rate = Number(rateVal);
+                if (isNaN(rate)) return;
+
+                let annFac;
+                if (isShrinkMode) {
+                    annFac = 1 - rate / 100;
+                } else {
+                    annFac = 1 + rate / 100;
+                }
+
+                if (annFac <= 0) return;
+
+                const r = monthlyFactorFromAnnualFactor(annFac);
                 const resultM = solveForMultiplier(r, referencePeriod, comparisonPeriod);
 
-                const nextGrowth = r.toFixed(4);
-                const nextMultiplier = resultM.toFixed(2);
-
-                if (
-                    values["Maximum monthly constant growth factor (r)"] !== nextGrowth ||
-                    values["Multiplier (m)"] !== nextMultiplier
-                ) {
-                    updateCalculatedFields({
-                        "Maximum monthly constant growth factor (r)": nextGrowth,
-                        "Multiplier (m)": nextMultiplier
-                    });
-                }
+                updateCalculatedFields({
+                    "Multiplier (m)": resultM.toFixed(2),
+                    "Monthly constant growth factor (r)": r.toFixed(4),
+                    "Annual price factor": annFac.toFixed(2)
+                });
             }
         }, TIMEOUTCALC);
 
         return () => clearTimeout(timer);
-    }, [values, activeField]);
+    }, [values, activeField, growthTitle, rateTitle, isShrinkMode]);
 
     function handleFocus(title) {
         setActiveField(title);
     }
 
     function handleChange(title, value) {
-        setValues(prev => ({ ...prev, [title]: value }));
+        let stateKey = title;
+        if (title === growthTitle) {
+            stateKey = "Monthly constant growth factor (r)";
+        } else if (title === rateTitle) {
+            stateKey = "Annual rate (%)";
+        }
+
+        setValues((prev) => ({ ...prev, [stateKey]: value }));
 
         if (
-            title === "Multiplier (m)" ||
-            title === "Reference Period (months)" ||
-            title === "Recent Comparison Period (months)"
+            stateKey === "Multiplier (m)" ||
+            stateKey === "Reference Period (months)" ||
+            stateKey === "Recent Comparison Period (months)"
         ) {
             setPreset("custom");
         }
     }
 
-    const currentR = Number(values["Maximum monthly constant growth factor (r)"]);
-
-    // Calculate annual rate (%):
-    // Growth Mode: (r^12 - 1) * 100%
-    // Shrink Mode: (1 - r^12) * 100% (Positive shrink percentage)
-    const yearlyRate = useMemo(() => {
-        if (isNaN(currentR) || currentR <= 0) return "0.00";
-        const factor12 = annualFactor(currentR);
-        if (isShrinkMode) {
-            return ((1 - factor12) * 100).toFixed(2);
-        } else {
-            return (annualGrowthRate(currentR) * 100).toFixed(2);
-        }
-    }, [isShrinkMode, currentR]);
+    const currentR = Number(values["Monthly constant growth factor (r)"]);
 
     return (
         <div className={`calculator ${isShrinkMode ? "shrink-active" : ""}`}>
@@ -180,7 +236,7 @@ function Calculator() {
                     value={values["Multiplier (m)"]}
                     onChange={handleChange}
                     onFocus={handleFocus}
-                    step="0.01"
+                    step={0.01}
                     highlight={highlightFields.includes("Multiplier (m)")}
                     subText={fractionText}
                     isRed={isShrinkMode}
@@ -191,7 +247,7 @@ function Calculator() {
                     value={values["Reference Period (months)"]}
                     onChange={handleChange}
                     onFocus={handleFocus}
-                    step="1"
+                    step={1}
                     highlight={highlightFields.includes("Reference Period (months)")}
                 />
 
@@ -200,7 +256,7 @@ function Calculator() {
                     value={values["Recent Comparison Period (months)"]}
                     onChange={handleChange}
                     onFocus={handleFocus}
-                    step="1"
+                    step={1}
                     highlight={highlightFields.includes("Recent Comparison Period (months)")}
                 />
             </div>
@@ -208,17 +264,12 @@ function Calculator() {
             <div className="calculator-body">
                 <div className="growth-column">
                     <ParameterInput
-                        title={
-                            isShrinkMode
-                                ? "Minimum monthly constant growth factor (r)"
-                                : "Maximum monthly constant growth factor (r)"
-                        }
-                        value={values["Maximum monthly constant growth factor (r)"]}
-                        step="0.0001"
-                        readOnly={true}
+                        title={growthTitle}
+                        value={values["Monthly constant growth factor (r)"]}
+                        step={0.0001}
                         onChange={handleChange}
                         onFocus={handleFocus}
-                        highlight={highlightFields.includes("Maximum monthly constant growth factor (r)")}
+                        highlight={highlightFields.includes("Monthly constant growth factor (r)")}
                         isRed={isShrinkMode}
                     />
 
@@ -227,20 +278,18 @@ function Calculator() {
                         value={values["Annual price factor"]}
                         onChange={handleChange}
                         onFocus={handleFocus}
-                        step="0.01"
+                        step={0.01}
                         highlight={highlightFields.includes("Annual price factor")}
                         isRed={isShrinkMode}
                     />
 
                     <ParameterInput
-                        title={isShrinkMode ? "Annual shrink rate (%)" : "Annual growth rate (%)"}
-                        value={yearlyRate}
-                        decimals={2}
-                        readOnly={true}
-                        highlight={
-                            highlightFields.includes("Annual shrink rate (%)") ||
-                            highlightFields.includes("Annual growth rate (%)")
-                        }
+                        title={rateTitle}
+                        value={values["Annual rate (%)"]}
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        step={0.01}
+                        highlight={highlightFields.includes("Annual rate (%)")}
                         isRed={isShrinkMode}
                     />
                 </div>
