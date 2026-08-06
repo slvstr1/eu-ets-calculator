@@ -315,7 +315,7 @@ function Calculator() {
                     <ParameterInput
                         title={growthTitle}
                         value={values["Monthly constant growth factor (r)"]}
-                        step={0.0001}
+                        step={0.001}
                         onChange={handleChange}
                         onFocus={handleFocus}
                         highlight={
@@ -340,7 +340,7 @@ function Calculator() {
                         value={values["Annual rate (%)"]}
                         onChange={handleChange}
                         onFocus={handleFocus}
-                        step={0.01}
+                        step={1}
                         highlight={
                             highlightFields.includes("Annual rate (%)") ||
                             highlightFields.includes(rateTitle)
