@@ -258,7 +258,10 @@ function Calculator() {
         if (
             stateKey === "Multiplier (m)" ||
             stateKey === "Reference Period (months)" ||
-            stateKey === "Recent Comparison Period (months)"
+            stateKey === "Recent Comparison Period (months)" ||
+            stateKey === "Monthly constant growth factor (r)" ||
+            stateKey === "Annual rate (%)" ||
+            stateKey === "Annual price factor"
         ) {
             setPreset("custom");
         }
