@@ -224,6 +224,26 @@ function Calculator() {
                 const nextR = r.toFixed(4);
                 const nextAnn = annFac.toFixed(2);
 
+
+  // --- ADDED THIS LOGIC ---
+                const newIsShrink = resultM < 1;
+                const nextRateInNewMode = newIsShrink
+                    ? ((1 - annFac) * 100).toFixed(2)
+                    : ((annFac - 1) * 100).toFixed(2);
+
+                const updates = {
+                    "Multiplier (m)": nextM,
+                    "Monthly constant growth factor (r)": nextR,
+                    "Annual price factor": nextAnn
+                };
+
+                // If the mode flipped (e.g. from Growth to Shrink), convert rate in state to positive equivalent
+                if (newIsShrink !== isShrinkMode || values["Annual rate (%)"] !== nextRateInNewMode) {
+                    updates["Annual rate (%)"] = nextRateInNewMode;
+                }
+
+
+
                 if (
                     values["Multiplier (m)"] !== nextM ||
                     values["Monthly constant growth factor (r)"] !== nextR ||
