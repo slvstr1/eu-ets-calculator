@@ -302,7 +302,7 @@ function Calculator() {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     step={0.01}
-                    min={0.000000001}
+                    min={0.01}
                     highlight={highlightFields.includes("Multiplier (m)")}
                     subText={fractionText}
                     isRed={isShrinkMode}
@@ -362,7 +362,7 @@ function Calculator() {
                         onChange={handleChange}
                         onFocus={handleFocus}
                         step={1}
-                        min={0.000000001}
+                        // min={0.000000001}
                         highlight={
                             highlightFields.includes("Annual rate (%)") ||
                             highlightFields.includes(rateTitle)
