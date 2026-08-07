@@ -55,22 +55,38 @@ function Calculator() {
         return null;
     }, [isShrinkMode, multiplierNum]);
 
+    // function updateCalculatedFields(updates) {
+    //     setValues((prev) => ({ ...prev, ...updates }));
+    //
+    //     const keysToHighlight = Object.keys(updates);
+    //     if (keysToHighlight.includes("Monthly constant growth factor (r)")) {
+    //         keysToHighlight.push(growthTitle);
+    //     }
+    //     if (keysToHighlight.includes("Annual rate (%)")) {
+    //         keysToHighlight.push(rateTitle);
+    //     }
+    //
+    //     setHighlightFields(keysToHighlight);
+    //     setTimeout(() => {
+    //         setHighlightFields([]);
+    //     }, 1000);
+    // }
+
     function updateCalculatedFields(updates) {
         setValues((prev) => ({ ...prev, ...updates }));
 
+        // 1. Get the keys that were calculated/updated
         const keysToHighlight = Object.keys(updates);
-        if (keysToHighlight.includes("Monthly constant growth factor (r)")) {
-            keysToHighlight.push(growthTitle);
-        }
-        if (keysToHighlight.includes("Annual rate (%)")) {
-            keysToHighlight.push(rateTitle);
-        }
 
-        setHighlightFields(keysToHighlight);
+        // 2. Filter out activeField so the field being edited NEVER turns yellow
+        setHighlightFields(keysToHighlight.filter((key) => key !== activeField));
+
+        // 3. Clear yellow highlight after 1 second
         setTimeout(() => {
             setHighlightFields([]);
         }, 1000);
     }
+
 
     function applyPreset(key) {
         const p = presets[key];
