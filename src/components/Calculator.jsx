@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, {useState, useEffect, useMemo} from "react";
 import ParameterInput from "./ParameterInput.jsx";
 import PriceGraph from "./PriceGraph.jsx";
 
@@ -13,12 +13,12 @@ import {
 const TIMEOUTCALC = 750;
 
 const presets = {
-    custom: { name: "Custom", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6 },
-    ets1: { name: "ETS1 Article 29a", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6 },
-    ets2early: { name: "ETS2 2027–2028", multiplier: 1.5, referencePeriod: 6, comparisonPeriod: 3 },
-    ets2small: { name: "ETS2 2029+ (50M permits)", multiplier: 2, referencePeriod: 6, comparisonPeriod: 3 },
-    ets2large: { name: "ETS2 2029+ (150M permits)", multiplier: 3, referencePeriod: 6, comparisonPeriod: 3 },
-    shrinkExample: { name: "Shrink Mode (m = 1 / 2.4)", multiplier: 0.4167, referencePeriod: 24, comparisonPeriod: 6 }
+    custom: {name: "Custom", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6},
+    ets1: {name: "ETS1 Article 29a", multiplier: 2.4, referencePeriod: 24, comparisonPeriod: 6},
+    ets2early: {name: "ETS2 2027–2028", multiplier: 1.5, referencePeriod: 6, comparisonPeriod: 3},
+    ets2small: {name: "ETS2 2029+ (50M permits)", multiplier: 2, referencePeriod: 6, comparisonPeriod: 3},
+    ets2large: {name: "ETS2 2029+ (150M permits)", multiplier: 3, referencePeriod: 6, comparisonPeriod: 3},
+    shrinkExample: {name: "Shrink Mode (m = 1 / 2.4)", multiplier: 0.4167, referencePeriod: 24, comparisonPeriod: 6}
 };
 
 function Calculator() {
@@ -55,25 +55,9 @@ function Calculator() {
         return null;
     }, [isShrinkMode, multiplierNum]);
 
-    // function updateCalculatedFields(updates) {
-    //     setValues((prev) => ({ ...prev, ...updates }));
-    //
-    //     const keysToHighlight = Object.keys(updates);
-    //     if (keysToHighlight.includes("Monthly constant growth factor (r)")) {
-    //         keysToHighlight.push(growthTitle);
-    //     }
-    //     if (keysToHighlight.includes("Annual rate (%)")) {
-    //         keysToHighlight.push(rateTitle);
-    //     }
-    //
-    //     setHighlightFields(keysToHighlight);
-    //     setTimeout(() => {
-    //         setHighlightFields([]);
-    //     }, 1000);
-    // }
 
     function updateCalculatedFields(updates) {
-        setValues((prev) => ({ ...prev, ...updates }));
+        setValues((prev) => ({...prev, ...updates}));
 
         // 1. Get the keys that were calculated/updated
         const keysToHighlight = Object.keys(updates);
@@ -214,64 +198,6 @@ function Calculator() {
                 }
             }
 
-  //           // 4. User edited Annual Rate (%)
-  //           if (
-  //               activeField === rateTitle ||
-  //               activeField === "Annual rate (%)" ||
-  //               activeField === "Annual growth rate (%)" ||
-  //               activeField === "Annual shrink rate (%)"
-  //           ) {
-  //               const rate = Number(rateVal);
-  //               if (isNaN(rate)) return;
-  //
-  //               let annFac;
-  //               if (isShrinkMode) {
-  //                   annFac = 1 - rate / 100;
-  //               } else {
-  //                   annFac = 1 + rate / 100;
-  //               }
-  //
-  //               if (annFac <= 0) return;
-  //
-  //               const r = monthlyFactorFromAnnualFactor(annFac);
-  //               const resultM = solveForMultiplier(r, referencePeriod, comparisonPeriod);
-  //
-  //               const nextM = resultM.toFixed(2);
-  //               const nextR = r.toFixed(4);
-  //               const nextAnn = annFac.toFixed(2);
-  //
-  //
-  // // --- ADDED THIS LOGIC ---
-  //               const newIsShrink = resultM < 1;
-  //               const nextRateInNewMode = newIsShrink
-  //                   ? ((1 - annFac) * 100).toFixed(2)
-  //                   : ((annFac - 1) * 100).toFixed(2);
-  //
-  //               const updates = {
-  //                   "Multiplier (m)": nextM,
-  //                   "Monthly constant growth factor (r)": nextR,
-  //                   "Annual price factor": nextAnn
-  //               };
-  //
-  //               // If the mode flipped (e.g. from Growth to Shrink), convert rate in state to positive equivalent
-  //               if (newIsShrink !== isShrinkMode || values["Annual rate (%)"] !== nextRateInNewMode) {
-  //                   updates["Annual rate (%)"] = nextRateInNewMode;
-  //               }
-  //
-  //
-  //
-  //               if (
-  //                   values["Multiplier (m)"] !== nextM ||
-  //                   values["Monthly constant growth factor (r)"] !== nextR ||
-  //                   values["Annual price factor"] !== nextAnn
-  //               ) {
-  //                   updateCalculatedFields({
-  //                       "Multiplier (m)": nextM,
-  //                       "Monthly constant growth factor (r)": nextR,
-  //                       "Annual price factor": nextAnn
-  //                   });
-  //               }
-  //           }
             // 4. User edited Annual Rate (%)
             if (
                 activeField === rateTitle ||
@@ -340,7 +266,7 @@ function Calculator() {
             stateKey = "Annual rate (%)";
         }
 
-        setValues((prev) => ({ ...prev, [stateKey]: value }));
+        setValues((prev) => ({...prev, [stateKey]: value}));
 
         if (
             stateKey === "Multiplier (m)" ||
@@ -376,6 +302,7 @@ function Calculator() {
                     onChange={handleChange}
                     onFocus={handleFocus}
                     step={0.01}
+                    min={0.000000001}
                     highlight={highlightFields.includes("Multiplier (m)")}
                     subText={fractionText}
                     isRed={isShrinkMode}
@@ -386,6 +313,7 @@ function Calculator() {
                     value={values["Reference Period (months)"]}
                     onChange={handleChange}
                     onFocus={handleFocus}
+                    min={1}
                     step={1}
                     highlight={highlightFields.includes("Reference Period (months)")}
                 />
@@ -395,6 +323,7 @@ function Calculator() {
                     value={values["Recent Comparison Period (months)"]}
                     onChange={handleChange}
                     onFocus={handleFocus}
+                    min={1}
                     step={1}
                     highlight={highlightFields.includes("Recent Comparison Period (months)")}
                 />
@@ -405,6 +334,7 @@ function Calculator() {
                     <ParameterInput
                         title={growthTitle}
                         value={values["Monthly constant growth factor (r)"]}
+                        min={0.000000001}
                         step={0.001}
                         onChange={handleChange}
                         onFocus={handleFocus}
@@ -420,7 +350,8 @@ function Calculator() {
                         value={values["Annual price factor"]}
                         onChange={handleChange}
                         onFocus={handleFocus}
-                        step={0.01}
+                        step={0.01} min={0.000000001}
+
                         highlight={highlightFields.includes("Annual price factor")}
                         isRed={isShrinkMode}
                     />
@@ -431,6 +362,7 @@ function Calculator() {
                         onChange={handleChange}
                         onFocus={handleFocus}
                         step={1}
+                        min={0.000000001}
                         highlight={
                             highlightFields.includes("Annual rate (%)") ||
                             highlightFields.includes(rateTitle)

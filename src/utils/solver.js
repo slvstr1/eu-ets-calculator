@@ -9,7 +9,7 @@ function impliedMultiplier(growthFactor, referencePeriod, comparisonPeriod) {
     const r = growthFactor;
 
     // Handle edge case where r = 1
-    if (Math.abs(r - 1) < 1e-9) {
+    if (Math.abs(r - 1) < 1e-15) {
         return 1;
     }
 
@@ -22,7 +22,7 @@ function impliedMultiplier(growthFactor, referencePeriod, comparisonPeriod) {
 /*
     Bisection solver.
 */
-function bisection(fn, target, low, high, tolerance = 0.00000001, maxIterations = 200) {
+function bisection(fn, target, low, high, tolerance = 1e-15, maxIterations = 800) {
     let lower = low;
     let upper = high;
 

@@ -8,6 +8,7 @@ function ParameterInput({
     onFocus,
     readOnly = false,
     step = 1,
+      min = undefined, // Pass min prop (e.g. min={0})
     highlight = false,
     isRed = false,
     subText = null
@@ -30,12 +31,18 @@ function ParameterInput({
                     value={numericValue}
                     readOnly={readOnly}
                     step={numericStep}
+                     min={min} // Restricts spin buttons in react-widgets
                     onFocus={() => onFocus && onFocus(title)}
                     onChange={(val) => {
                         if (val === null || val === undefined || isNaN(val)) {
                             onChange(title, "");
                         } else {
-                            onChange(title, String(val));
+                              // Enforce min constraint on manual input
+                            let finalVal = val;
+                            if (min !== undefined && finalVal < min) {
+                                finalVal = min;
+                            }
+                            onChange(title, String(finalVal));
                         }
                     }}
                 />
